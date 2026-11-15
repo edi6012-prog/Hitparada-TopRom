@@ -1,0 +1,6 @@
+{
+  "name": "Hitparáda TopRom",
+  "description": "Hitparáda TopRom: hlasujte za najlepšie skladby mesiaca v kategóriách CZ/SK, Rómska, Rocková a World Music.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

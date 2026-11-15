@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070606">
+<title>Hitparáda TopRom</title>
+<meta name="description" content="Hitparáda TopRom: hlasujte za najlepšie skladby mesiaca v kategóriách CZ/SK, Rómska, Rocková a World Music.">
+<link rel="canonical" href="https://hitparada-topromfiles-2.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hitparáda TopRom">
+<meta property="og:locale" content="sk_SK">
+<meta property="og:url" content="https://hitparada-topromfiles-2.vercel.app/">
+<meta property="og:title" content="Hitparáda TopRom">
+<meta property="og:description" content="Hlasuj za najlepšie skladby mesiaca: CZ/SK, Rómska, Rocková a World Music hitparáda.">
+<meta property="og:image" content="https://hitparada-topromfiles-2.vercel.app/og-image.jpg">
+<meta property="og:image:secure_url" content="https://hitparada-topromfiles-2.vercel.app/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo Hitparáda TopRom, Music Studio Records">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hitparáda TopRom">
+<meta name="twitter:description" content="Hlasuj za najlepšie skladby mesiaca: CZ/SK, Rómska, Rocková a World Music hitparáda.">
+<meta name="twitter:image" content="https://hitparada-topromfiles-2.vercel.app/og-image.jpg">
+<meta name="twitter:image:alt" content="Logo Hitparáda TopRom, Music Studio Records">
+<meta name="twitter:url" content="https://hitparada-topromfiles-2.vercel.app/">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TopRom">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+  :root{
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    color-scheme:dark;
+    --bg:#070606; --surface:#12100E; --surface2:#1C1814; --line:rgba(212,175,55,.28);
+    --text:#F7F1E3; --muted:#B8AC93; --a:#E6C25A;
+    --gold:#F0CB62; --gold-deep:#B8912B; --silver:#DAD3BF; --bronze:#B9803E;
+    --red:#D1121F; --red-hi:#E5222E;
+  }
+  html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px)}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.5;-webkit-tap-highlight-color:transparent}
+  .font-display{font-family:'Bricolage Grotesque','Figtree',system-ui,sans-serif;letter-spacing:-.02em}
+  .muted{color:var(--muted)}
+  .gold-link{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+  main:focus{outline:none}
+
+  /* Header */
+  .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--bg);border-bottom:1px solid var(--line)}
+  .topbar::after{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent,var(--gold-deep),var(--red),var(--gold-deep),transparent);opacity:.8}
+  .nav a{padding:.45rem .8rem;border-radius:999px;font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap}
+  .nav a:hover{color:var(--text)}
+  .nav a[aria-current="page"]{background:var(--surface2);color:var(--gold);box-shadow:inset 0 0 0 1px var(--line)}
+
+  /* Home tiles */
+  .sleeve{position:relative;overflow:hidden;isolation:isolate;background:var(--surface);color:var(--text);border:1.5px solid var(--gold-deep);border-radius:22px;min-height:260px;transition:transform .2s ease,border-color .2s}
+  .sleeve:hover{transform:translateY(-3px);border-color:var(--gold)}
+  .sleeve-body{padding:1.5rem;display:flex;flex-direction:column;height:100%}
+  .sleeve-icon{font-size:2.4rem;line-height:1;margin-bottom:.75rem}
+  .disc{position:absolute;z-index:-1;right:-130px;top:50%;--d:300px;margin-top:calc(var(--d) / -2);width:var(--d);height:var(--d);border-radius:50%;opacity:.85;
+    background:
+      radial-gradient(circle,#070606 0 4%,#d9b64f 5% 6%,var(--red) 7% 21%,#070606 22% 23%,transparent 24%),
+      conic-gradient(from 0deg,transparent 0 8%,rgba(240,203,98,.30) 12%,transparent 17% 58%,rgba(240,203,98,.22) 62%,transparent 67%),
+      repeating-radial-gradient(circle,#0c0a09 0 2px,#241c10 3px 5px);
+    box-shadow:0 0 0 1.5px var(--gold-deep),0 10px 30px rgba(0,0,0,.6);
+    animation:spin var(--t,10s) linear infinite;transition:right .4s ease}
+  .sleeve:hover .disc{right:-100px}
+  /* Logo (JN) presne v strede platne: funguje pre každú veľkosť platne (--d) */
+  .vinyl-hub,.vinyl-hub-fallback{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38%;aspect-ratio:1/1;border-radius:50%}
+  .vinyl-hub{z-index:3;background:var(--logo-url,none) center/cover no-repeat;box-shadow:0 0 0 2px var(--gold-deep),0 0 14px rgba(0,0,0,.65)}
+  .vinyl-hub-fallback{z-index:2;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#2a1f0a,#070606);border:2px solid var(--gold-deep);color:var(--gold);font-family:'Bricolage Grotesque',Georgia,serif;font-weight:800;line-height:1;font-size:calc(var(--d) * .115)}
+  @media(max-width:640px){.disc{--d:230px;right:-105px}.sleeve:hover .disc{right:-85px}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .leader{margin-top:auto;padding:.6rem .85rem;border-radius:12px;background:rgba(7,6,6,.72);border:1px solid var(--line);display:flex;flex-direction:column;min-width:0;line-height:1.3}
+  .leader > *{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pill-dark{background:var(--red);color:#fff;padding:.55rem 1.1rem;border-radius:999px;font-weight:700;text-decoration:none}
+  .pill-dark:hover{background:var(--red-hi)}
+  .pill-dark::after{content:'';position:absolute;inset:0;z-index:1}
+  .sleeve .alt-link{position:relative;z-index:2;font-weight:700;text-decoration:underline;text-underline-offset:4px;color:var(--gold)}
+
+  /* Buttons & fields */
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border-radius:999px;font:inherit;font-weight:700;font-size:.9rem;border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s,border-color .15s}
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-play{background:var(--red);color:#fff}
+  .btn-play:hover:not(:disabled){background:var(--red-hi)}
+  .btn-rate{background:transparent;border-color:var(--gold-deep);color:var(--gold)}
+  .btn-rate:hover{border-color:var(--gold);background:rgba(230,194,90,.08)}
+  .btn-rate.is-set{background:rgba(230,194,90,.14);border-color:var(--gold)}
+  .btn-primary{background:var(--red);color:#fff}
+  .btn-primary:hover{background:var(--red-hi)}
+  .btn-ghost{background:var(--surface2);color:var(--text);border-color:var(--line)}
+  .btn-ghost:hover{border-color:var(--gold-deep)}
+  .btn-danger{background:var(--red);color:#fff}
+  .btn-danger:hover{background:var(--red-hi)}
+  .btn-sm{padding:.35rem .75rem;font-size:.8rem}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.25rem}
+  .field{width:100%;background:#0b0909;border:1.5px solid var(--line);color:var(--text);border-radius:12px;padding:.7rem .85rem;font:inherit}
+  .field:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(230,194,90,.3)}
+  label.lbl{display:block;font-weight:600;font-size:.9rem;margin-bottom:.3rem;color:var(--gold)}
+
+  /* Song rows */
+  .song{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem 1.15rem;overflow:hidden}
+  .song-main{display:flex;align-items:center;gap:.85rem}
+  .rank{width:2.2rem;flex:none;text-align:center;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:1.5rem;color:var(--muted)}
+  .rank.top{color:var(--gold)}
+  .song-meta{margin:.4rem 0 0 3.05rem;font-size:.8rem;color:var(--muted);display:flex;gap:1rem;flex-wrap:wrap}
+  .song-actions{margin:.75rem 0 0 3.05rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .mini-disc{--d:46px;position:relative;flex:none;width:var(--d);height:var(--d);border-radius:50%;
+    background:
+      radial-gradient(circle,#070606 0 4%,#d9b64f 5% 6%,var(--red) 7% 30%,#070606 31% 32%,transparent 33%),
+      conic-gradient(from 0deg,transparent 0 8%,rgba(240,203,98,.35) 12%,transparent 17% 58%,rgba(240,203,98,.25) 62%,transparent 67%),
+      repeating-radial-gradient(circle,#0c0a09 0 1px,#241c10 2px 3px);
+    box-shadow:0 0 0 1px var(--gold-deep),0 3px 10px rgba(0,0,0,.6);
+    animation:spin var(--t,6s) linear infinite}
+  .mini-disc.rev{animation-direction:reverse}
+  .mini-disc .vinyl-hub,.mini-disc .vinyl-hub-fallback{width:46%}
+  .mini-disc .vinyl-hub{box-shadow:0 0 0 1px var(--gold-deep)}
+  .mini-disc .vinyl-hub-fallback{border-width:1px;font-size:calc(var(--d) * .17)}
+  .player-slot:not(:empty){margin-top:.85rem}
+  .player{border:1.5px solid var(--gold-deep);border-radius:14px;padding:.5rem;background:#000}
+  .ratio{position:relative;width:100%;padding-top:56.25%;border-radius:10px;overflow:hidden;background:#000}
+  .ratio iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .rate-panel{margin-top:.85rem;padding-top:.85rem;border-top:1px dashed var(--line)}
+  .rate-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
+  .score{padding:.7rem 0;border-radius:10px;background:var(--surface2);color:var(--text);font:inherit;font-weight:700;border:1.5px solid var(--line);cursor:pointer}
+  .score:hover{border-color:var(--red-hi)}
+  .score.on{background:var(--red);border-color:var(--red);color:#fff}
+  .bar{position:absolute;left:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--gold-deep),var(--red));transition:width .4s ease}
+  .song.flash{animation:flash 1.4s ease-out}
+  @keyframes flash{from{box-shadow:0 0 0 3px var(--gold)}to{box-shadow:0 0 0 0 transparent}}
+  @media(max-width:520px){.song-meta,.song-actions{margin-left:0}}
+  @media(min-width:640px){.rate-grid{grid-template-columns:repeat(10,1fr)}}
+
+  /* Tabs */
+  .tab{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.9rem;text-decoration:none;color:var(--text);white-space:nowrap}
+  .tab:hover{border-color:var(--gold)}
+  .tab[aria-current="page"]{background:var(--red);color:#fff;border-color:var(--red)}
+
+  /* Podium (zlaté rámiky) */
+  .gold-frame{border:1.5px solid var(--gold-deep);box-shadow:0 0 0 4px #070606,0 0 0 5px var(--line)}
+  .podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;align-items:end;max-width:680px;margin:0 auto}
+  .pod{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
+  .pod-info{width:100%;padding:0 .2rem .75rem;min-width:0}
+  .pod-info .nm{font-weight:700;line-height:1.2;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pod-info .tt{font-size:.8rem;color:var(--muted);line-height:1.25;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .pedestal{width:100%;height:var(--h);background:linear-gradient(180deg,#241d12,#0d0b09);border:1.5px solid var(--m);border-top-width:5px;border-bottom:0;border-radius:14px 14px 0 0;display:flex;justify-content:center;align-items:flex-start;padding-top:.5rem;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:2.6rem;color:var(--m);transform-origin:bottom}
+  .pod.first .pedestal{box-shadow:0 -10px 40px -12px var(--gold)}
+  .rise{animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d)}
+  .fade{animation:fadeup .5s ease both;animation-delay:calc(var(--d) + .45s)}
+  @keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .pts{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:1.25rem;font-variant-numeric:tabular-nums}
+
+  /* Modal & toast */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:1rem}
+  .modal-card{background:var(--surface);border:1.5px solid var(--gold-deep);border-radius:20px;padding:1.5rem;max-width:26rem;width:100%}
+  #toast{position:fixed;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:90;background:var(--gold);color:#120d03;font-weight:700;padding:.7rem 1.1rem;border-radius:999px;max-width:92vw;text-align:center;transition:opacity .2s,transform .2s}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  .scroller{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* Bannery: 4 boxy, na počítači vedľa seba, na mobile pod sebou */
+  .banner-grid{display:grid;gap:.75rem;grid-template-columns:1fr}
+  @media(min-width:640px){.banner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(min-width:1024px){.banner-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  .banner{position:relative;display:flex;flex-direction:column;gap:.5rem;background:var(--surface);border:1.5px solid var(--gold-deep);border-radius:16px;padding:1.4rem .75rem .75rem;text-decoration:none;color:var(--text);overflow:hidden;transition:border-color .2s,transform .15s}
+  a.banner:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .banner-label{position:absolute;top:.4rem;left:.8rem;right:.8rem;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .banner-media{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#241d12,#070606);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:var(--gold)}
+  .banner-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .banner-media.fit-contain::before{content:'';position:absolute;inset:-12px;background:var(--bg) center/cover no-repeat;filter:blur(14px) brightness(.55)}
+  .banner-media.fit-contain img{object-fit:contain;padding:.35rem}
+  .banner-play{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(209,18,31,.92);box-shadow:0 0 0 2px #fff3}
+  .banner-play::after{content:'';position:absolute;left:18px;top:13px;border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent}
+  .banner .btn{margin-top:auto;align-self:flex-start}
+  .share-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+  .share-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-width:46px;height:46px;padding:0 1rem;border-radius:999px;background:var(--surface2);border:1.5px solid var(--gold-deep);color:var(--gold);font:inherit;font-weight:700;font-size:.9rem;text-decoration:none;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform .1s}
+  .share-btn:hover{background:var(--red);border-color:var(--red);color:#fff}
+  .share-btn:active{transform:scale(.96)}
+  .share-btn svg{width:20px;height:20px;flex:none}
+  .share-row.compact .share-btn{height:40px;min-width:40px;padding:0 .7rem}
+  .share-row.compact .share-btn span{display:none}
+  .views{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .9rem;border-radius:999px;background:var(--surface2);border:1px solid var(--gold-deep);color:var(--gold);font-weight:600;font-size:.9rem}
+  .views[hidden]{display:none}
+  .views svg{width:22px;height:22px;flex:none}
+  .views b{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;font-size:1.2rem;color:var(--text);font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface2);border:1px solid var(--line);color:var(--gold);border-radius:999px;padding:.3rem .8rem;font-size:.85rem;font-weight:600}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+    <a id="brand" href="#/" class="flex items-center gap-2 font-display font-extrabold text-lg" style="text-decoration:none;color:var(--text)" aria-label="Hitparáda TopRom, domov"></a>
+    <nav class="nav flex items-center gap-1 text-sm" aria-label="Hlavná navigácia">
+      <a data-nav="home" href="#/">Domov</a>
+      <a data-nav="results" href="#/vysledky/czsk">Výsledky</a>
+      <a data-nav="admin" href="#/sprava"><span class="hidden sm:inline">Správa / Pridať skladbu</span><span class="sm:hidden">Správa</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="app" class="mx-auto w-full max-w-5xl px-4 sm:px-6 py-6 sm:py-10" tabindex="-1"></main>
+
+<section id="bannerSection" aria-labelledby="bannerHeading" class="mx-auto max-w-5xl px-4 sm:px-6 pb-6">
+  <h2 id="bannerHeading" class="font-display font-extrabold text-2xl sm:text-3xl mb-4" style="color:var(--gold)">Reklama pre kapely</h2>
+  <div id="banners" class="banner-grid"></div>
+</section>
+
+<footer class="mx-auto max-w-5xl px-4 sm:px-6 pb-10 text-sm muted">
+  <div id="shareFooter" class="mb-4"></div>
+  Hitparáda TopRom. Skladby, hlasy a výsledky sú uložené v centrálnej databáze, takže ich vidia všetci návštevníci.
+</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+tailwind.config = { theme: { extend: {} } };
+</script>
+<script>
+(() => {
+'use strict';
+
+/* ===================== KONFIGURÁCIA ===================== */
+// ===== NASTAVENIE DATABÁZY (Supabase, bezplatný plán) =====
+// Postup je v súbore supabase-setup.sql. Údaje nájdete v Supabase: Project Settings > API.
+const SUPABASE_URL = 'https://wolqnwusixjcrduebhea.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_wKk3AXgJcFjs1tEbUSQgpQ_bYbWyuEZ';  // verejný kľúč „anon“ alebo „publishable“ (nie „service_role“!)
+// Oficiálne logo: vložte sem data URI, napr. 'data:image/webp;base64,....'
+// (webové logo sa dá nahrať aj v sekcii Správa, ale ukladá sa len v danom prehliadači)
+const LOGO_SRC = 'data:image/webp;base64,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';
+// Sekcia pre interpretov: sem doplňte svoje údaje.
+const ARTIST_FEE = '5 €';
+const ARTIST_IBAN = 'SK7765000000003652432312';      // napr. 'SK00 0000 0000 0000 0000 0000'
+const ARTIST_MESSENGER = 'https://www.facebook.com/jan.nistor.37'; // odkaz na Messenger/Facebook (musí začínať https://)
+const KEY = 'hitparada-toprom-local-v1'; // lokálne sa pamätá len ID hlasujúceho a prezývka // nový kľúč: zahodí staré ukážkové dáta
+
+const CATS = {
+  czsk:  { id:'czsk',  short:'CZ / SK',  icon:'🇨🇿🇸🇰', name:'CZ / SK Hitparáda',  desc:'Pop, rap a domáca scéna',      accent:'#E6C25A' },
+  roma:  { id:'roma',  short:'Rómska',   icon:'🎶',     name:'Rómska Hitparáda',   desc:'Tradičná aj moderná hudba',   accent:'#E6C25A' },
+  rock:  { id:'rock',  short:'Rocková',  icon:'🎸',     name:'Rocková Hitparáda',  desc:'Rock, metal a gitary',        accent:'#E6C25A' },
+  world: { id:'world', short:'World Music',  icon:'🌍',     name:'World Music Hitparáda',  desc:'Zahraničné novinky',          accent:'#E6C25A' }
+};
+const MONTHS = ['január','február','marec','apríl','máj','jún','júl','august','september','október','november','december'];
+
+/* ===================== POMOCNÉ FUNKCIE ===================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => new Intl.NumberFormat('sk-SK').format(n);
+const pad = n => String(n).padStart(2,'0');
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const avg = s => s.votes ? (s.points / s.votes).toFixed(1).replace('.',',') : '–';
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function hash(str){ let h = 2166136261; for (const ch of str){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function monthKeyNow(){ const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth()+1); }
+function monthLabel(key){ const [y,m] = key.split('-').map(Number); return cap(MONTHS[m-1]) + ' ' + y; }
+function nextKey(key){ const [y,m] = key.split('-').map(Number); return m === 12 ? (y+1)+'-01' : y+'-'+pad(m+1); }
+function monthStatus(){
+  const [y,m] = state.month.split('-').map(Number);
+  const days = Math.ceil((new Date(y, m, 1) - new Date()) / 864e5);
+  return days > 0 ? 'Do uzávierky zostáva ' + days + (days === 1 ? ' deň' : days < 5 ? ' dni' : ' dní') : 'Mesiac sa skončil, čaká na uzávierku';
+}
+
+/* ===================== YOUTUBE (bezpečné odkazy) ===================== */
+function ytId(raw){
+  try{
+    let s = String(raw || '').trim(); if (!s) return '';
+    if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+    const u = new URL(s);
+    const h = u.hostname.replace(/^(www|m|music)\./,'');
+    let id = '';
+    if (h === 'youtu.be') id = u.pathname.slice(1).split('/')[0];
+    else if (h === 'youtube.com' || h === 'youtube-nocookie.com'){
+      if (u.pathname === '/watch') id = u.searchParams.get('v') || '';
+      else { const m = u.pathname.match(/^\/(embed|shorts|live|v)\/([^/?]+)/); if (m) id = m[2]; }
+    }
+    return /^[\w-]{11}$/.test(id) ? id : '';
+  }catch(e){ return ''; }
+}
+// Vždy vráti bezpečný https odkaz: priamy klip, alebo vyhľadávanie na YouTube
+function playUrl(s){
+  const id = ytId(s.yt);
+  return id ? 'https://www.youtube.com/watch?v=' + id
+            : 'https://www.youtube.com/results?search_query=' + encodeURIComponent(s.artist + ' ' + s.title);
+}
+
+/* ===================== STAV A ÚLOŽISKO ===================== */
+let sbClient = null;
+function sb(){
+  if (!sbClient){
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) throw new Error('Databáza nie je nastavená. Doplňte SUPABASE_URL a SUPABASE_ANON_KEY na začiatku skriptu.');
+    if (!window.supabase || !window.supabase.createClient) throw new Error('Knižnicu Supabase sa nepodarilo načítať. Skontrolujte pripojenie na internet.');
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession:false, autoRefreshToken:false, detectSessionInUrl:false } });
+  }
+  return sbClient;
+}
+async function rpc(fn, args){
+  const { data, error } = await sb().rpc(fn, args || {});
+  if (error) throw new Error(error.message || 'Chyba databázy');
+  return data;
+}
+function loadLocal(){ try{ const o = JSON.parse(localStorage.getItem(KEY)); if (o && typeof o === 'object') return o; }catch(e){} return {}; }
+const local = loadLocal();
+if (!local.voter || String(local.voter).length < 10){
+  local.voter = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2,12);
+}
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(local)); }catch(e){} }
+saveLocal();
+
+let state = { month: monthKeyNow(), songs: [], history: [], fan: null, mine: {}, nick: local.nick || '', logo: '', loaded: false, error: '' };
+
+async function loadData(){
+  const [st, mine] = await Promise.all([ rpc('get_state'), rpc('get_my_votes', { p_voter: local.voter }) ]);
+  state.month = st.month || state.month;
+  // Normalizácia: id vždy ako TEXT (data-id v HTML je text, číselné id by nikdy nesedelo pri ===),
+  // akceptuje starý (category, url) aj nový (cat, yt) názov stĺpcov
+  state.songs = (st.songs || []).map(x => ({
+    id: String(x.id),
+    cat: x.cat || x.category,
+    artist: x.artist,
+    title: x.title,
+    yt: x.yt || x.url || '',
+    points: Number(x.points) || 0,
+    votes: Number(x.votes) || 0
+  })).filter(x => CATS[x.cat] && x.artist && x.title);
+  state.history = st.history || [];
+  state.fan = st.fan || null;
+  state.mine = mine || {};
+  state.loaded = true; state.error = '';
+}
+
+function renderBrand(){
+  const src = (typeof state.logo === 'string' && /^data:image\//.test(state.logo)) ? state.logo : LOGO_SRC;
+  const mark = src
+    ? '<img src="' + esc(src) + '" alt="" style="height:42px;width:42px;object-fit:cover;border-radius:50%">'
+    : '<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="9" fill="#0b0909" stroke="#D4AF37" stroke-width="1.6"/><path d="M13 9.5v15l12-7.5z" fill="#D1121F"/></svg>';
+  if (src) document.documentElement.style.setProperty('--logo-url', 'url("' + src + '")');
+  $('#brand').innerHTML = mark + '<span>Hitparáda <span style="color:var(--gold)">TopRom</span></span>';
+}
+const ui = { open:null, play:null, flash:null, admin:false, lastCat:null, pin:'', busy:false };
+
+function ranked(cat){
+  return state.songs.filter(s => s.cat === cat)
+    .sort((a,b) => b.points - a.points || b.votes - a.votes || a.artist.localeCompare(b.artist,'sk'));
+}
+const rowOf = s => ({ artist:s.artist, title:s.title, points:s.points, votes:s.votes });
+
+/* ===================== TOAST A DIALÓG ===================== */
+let toastTimer;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function ask(title, text, ok){
+  return new Promise(res => {
+    const w = document.createElement('div'); w.className = 'modal';
+    w.innerHTML = '<div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="mt">' +
+      '<h3 id="mt" class="font-display text-xl font-extrabold">' + esc(title) + '</h3>' +
+      '<p class="mt-2 muted">' + esc(text) + '</p>' +
+      '<div class="mt-5 flex gap-2 justify-end"><button class="btn btn-ghost" data-r="0">Zrušiť</button>' +
+      '<button class="btn btn-danger" data-r="1">' + esc(ok || 'Potvrdiť') + '</button></div></div>';
+    document.body.appendChild(w);
+    const done = v => { w.remove(); document.removeEventListener('keydown', onKey); res(v); };
+    const onKey = e => { if (e.key === 'Escape') done(false); };
+    w.addEventListener('click', e => {
+      const r = e.target.closest('[data-r]');
+      if (r) done(r.dataset.r === '1'); else if (e.target === w) done(false);
+    });
+    document.addEventListener('keydown', onKey);
+    w.querySelector('[data-r="0"]').focus();
+  });
+}
+function normalizeNick(v){
+  return String(v == null ? '' : v).normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g, '').trim().replace(/\s+/g, ' ').slice(0, 30);
+}
+function saveNick(v){
+  const nick = normalizeNick(v);
+  state.nick = nick;
+  local.nick = nick;
+  saveLocal();
+  return nick;
+}
+/** Dialóg na meno/prezývku pred prvým hlasom. Vráti string alebo null pri zrušení. */
+function askNick(){
+  return new Promise(res => {
+    const w = document.createElement('div'); w.className = 'modal';
+    w.innerHTML = '<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="nickTitle">' +
+      '<h3 id="nickTitle" class="font-display text-xl font-extrabold">Ako sa máme volať?</h3>' +
+      '<p class="mt-2 muted">Pred hodnotením zadajte meno alebo prezývku. Uloží sa v tomto prehliadači a pôjde s každým hlasom.</p>' +
+      '<label class="lbl mt-4" for="nickPrompt">Meno alebo prezývka</label>' +
+      '<input id="nickPrompt" class="field" maxlength="30" autocomplete="nickname" placeholder="Napr. Jano, Mária, DJ Rom…">' +
+      '<p id="nickPromptErr" class="text-sm mt-2" style="color:#FF8FA3;min-height:1.25em" role="alert"></p>' +
+      '<div class="mt-4 flex gap-2 justify-end">' +
+        '<button type="button" class="btn btn-ghost" data-r="0">Zrušiť</button>' +
+        '<button type="button" class="btn btn-primary" data-r="1">Uložiť a hlasovať</button>' +
+      '</div></div>';
+    document.body.appendChild(w);
+    const inp = w.querySelector('#nickPrompt');
+    const err = w.querySelector('#nickPromptErr');
+    const done = v => { w.remove(); document.removeEventListener('keydown', onKey); res(v); };
+    const submit = () => {
+      const nick = normalizeNick(inp.value);
+      if (!nick){ err.textContent = 'Zadajte meno alebo prezývku.'; inp.focus(); return; }
+      done(nick);
+    };
+    const onKey = e => {
+      if (e.key === 'Escape'){ e.preventDefault(); done(null); }
+      else if (e.key === 'Enter'){ e.preventDefault(); submit(); }
+    };
+    w.addEventListener('click', e => {
+      const r = e.target.closest('[data-r]');
+      if (!r){ if (e.target === w) done(null); return; }
+      if (r.dataset.r === '1') submit(); else done(null);
+    });
+    document.addEventListener('keydown', onKey);
+    inp.focus();
+  });
+}
+/** Ak už je prezývka uložená, vráti ju; inak otvorí dialóg. Null = používateľ zrušil. */
+async function ensureNickForVote(){
+  const existing = normalizeNick(state.nick || local.nick);
+  if (existing) return saveNick(existing);
+  const nick = await askNick();
+  if (!nick) return null;
+  return saveNick(nick);
+}
+
+/* ===================== VIEW: DOMOV ===================== */
+function viewHome(){
+  const tiles = Object.values(CATS).map(c => {
+    const list = ranked(c.id), lead = list[0];
+    const leader = lead && lead.points > 0
+      ? '<span class="text-xs font-semibold" style="opacity:.7">Teraz vedie</span><span class="font-bold">' + esc(lead.artist) + '</span><span style="opacity:.8">' + esc(lead.title) + '</span>'
+      : '<span class="font-semibold">' + (list.length ? 'Zatiaľ nikto nehlasoval' : 'Zatiaľ žiadne skladby') + '</span>';
+    return '<article class="sleeve" style="--a:' + c.accent + '">' +
+      '<div class="disc" aria-hidden="true" style="--t:' + ({czsk:9,roma:12,rock:8,world:14}[c.id] || 10) + 's"><span class="vinyl-hub-fallback" aria-hidden="true">JN</span><span class="vinyl-hub"></span></div>' +
+      '<div class="sleeve-body">' +
+        '<div class="sleeve-icon" aria-hidden="true">' + c.icon + '</div>' +
+        '<h2 class="font-display text-2xl sm:text-3xl font-extrabold leading-tight">' + c.name + '</h2>' +
+        '<p class="mt-1 font-medium" style="opacity:.8">' + c.desc + '</p>' +
+        '<div class="leader mt-5">' + leader + '</div>' +
+        '<div class="mt-4 flex items-center justify-between gap-3 text-sm">' +
+          '<a class="pill-dark" href="#/kategoria/' + c.id + '" aria-label="Otvoriť hitparádu: ' + esc(c.name) + '">Hlasovať</a>' +
+          '<a class="alt-link" href="#/vysledky/' + c.id + '">Výsledky</a>' +
+        '</div>' +
+      '</div></article>';
+  }).join('');
+
+  $('#app').innerHTML =
+    '<section class="mb-8 sm:mb-10">' +
+      '<span class="chip">' + esc(monthLabel(state.month)) + ' – ' + esc(monthStatus()) + '</span>' +
+      '<h1 class="font-display font-extrabold text-4xl sm:text-6xl leading-[1.02] mt-4 max-w-3xl">Vyberte hitparádu a pridelte body skladbám mesiaca.</h1>' +
+      '<p class="mt-4 muted max-w-xl">Každý hlas je 1 až 10 bodov. Poradie určuje súčet bodov, pri rovnosti rozhodne počet hlasov. Na konci mesiaca sa vyhlásia víťazi.</p>' +
+    '</section>' +
+    (state.songs.length ? '' : '<div class="card mb-5 flex flex-wrap items-center justify-between gap-3"><p class="font-semibold">Hitparáda je zatiaľ prázdna. Správca musí najprv pridať skladby.</p><a class="btn btn-primary" href="#/sprava">Pridať prvú skladbu</a></div>') +
+    '<section class="grid gap-4 sm:gap-5 sm:grid-cols-2" aria-label="Kategórie">' + tiles + '</section>' +
+    '<div class="mt-8">' + championsHTML() + fanHTML() + '</div>' +
+    '<div class="mt-8">' + artistCardHTML() + shareCardHTML() + '</div>' +
+    '<p class="mt-6 flex flex-wrap gap-2"><a class="btn btn-primary" href="#/sprava">Pridať skladbu</a><a class="btn btn-ghost" href="#/vysledky/czsk">Sieň slávy a mesačné výsledky</a></p>';
+}
+
+/* ===================== VIEW: KATEGÓRIA ===================== */
+function viewCat(id){
+  const c = CATS[id];
+  $('#app').innerHTML =
+    '<a href="#/" class="muted font-semibold" style="text-decoration:none">Späť na kategórie</a>' +
+    '<header class="mt-4 mb-6 flex flex-wrap items-end justify-between gap-4" style="--a:' + c.accent + '">' +
+      '<div><div class="text-3xl" aria-hidden="true">' + c.icon + '</div>' +
+      '<h1 class="font-display font-extrabold text-3xl sm:text-5xl mt-1" style="color:' + c.accent + '">' + c.name + '</h1>' +
+      '<p class="muted mt-1">' + esc(monthLabel(state.month)) + '. ' + esc(monthStatus()) + '.</p></div>' +
+      '<div class="flex flex-wrap gap-2"><a class="btn btn-primary" href="#/sprava?cat=' + id + '">Pridať skladbu</a><a class="btn btn-ghost" href="#/vysledky/' + id + '">Pódium a výsledky</a></div>' +
+    '</header>' +
+    '<div id="catStatsBox" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4"></div>' +
+    '<p id="catStats" class="muted text-sm mb-3"></p>' +
+    '<ol id="list" class="grid gap-3" style="list-style:none;margin:0;padding:0"></ol>';
+  paintList(id);
+}
+function paintList(id){
+  const c = CATS[id], list = ranked(id), max = Math.max(1, ...list.map(s => s.points));
+  const totalVotes = list.reduce((a,s) => a + s.votes, 0);
+  $('#catStats').textContent = list.length + ' skladieb, ' + fmt(totalVotes) + ' hlasov celkom. Hlasovanie je bez registrácie, jeden hlas na skladbu.';
+  const totalPts = list.reduce((a,s) => a + s.points, 0);
+  const lead = list[0] && list[0].points > 0 ? list[0] : null;
+  const box = $('#catStatsBox');
+  if (box) box.innerHTML = [['Skladieb', fmt(list.length)], ['Hlasov', fmt(totalVotes)], ['Priemer bodov', totalVotes ? (totalPts / totalVotes).toFixed(1).replace('.',',') : '–'], ['Vedie', lead ? esc(lead.artist) : '–']]
+    .map(([k,v]) => '<div class="card" style="padding:.8rem 1rem"><p class="text-xs muted">' + k + '</p><p class="font-display font-extrabold text-xl" style="color:var(--gold);overflow-wrap:anywhere">' + v + '</p></div>').join('');
+  if (!list.length){
+    $('#list').innerHTML = '<li class="card muted">V tejto kategórii zatiaľ nie sú skladby. Pridajte prvú cez <a href="#/sprava?cat=' + id + '" style="color:var(--text);text-decoration:underline">Pridať skladbu</a>.</li>';
+    return;
+  }
+  $('#list').innerHTML = list.map((s,i) => songRowHTML(s,i,c,max)).join('');
+}
+function topFan(){ return state.fan && state.fan.votes > 0 ? state.fan : null; }
+const hlasov = n => n + (n === 1 ? ' hlas' : n >= 2 && n <= 4 ? ' hlasy' : ' hlasov');
+function championsHTML(){
+  const h = state.history[0];
+  const head = '<h2 class="font-display font-extrabold text-2xl sm:text-3xl">🏆 Šampióni predchádzajúceho mesiaca</h2>';
+  if (!h) return '<section class="card gold-frame">' + head + '<p class="muted mt-2">Šampióni sa zobrazia po prvej uzávierke mesiaca. Zatiaľ sa žiadny mesiac neskončil.</p></section>';
+  const cards = Object.values(CATS).map(c => {
+    const w = (h.cats[c.id] || [])[0];
+    return '<div class="card" style="padding:1rem;text-align:center;border-color:var(--gold-deep)"><p class="text-xs muted">' + c.icon + ' ' + c.short + '</p>' +
+      (w ? '<p class="font-bold mt-1" style="overflow-wrap:anywhere">' + esc(w.artist) + '</p><p class="text-sm muted" style="overflow-wrap:anywhere">' + esc(w.title) + '</p><p class="pts mt-1" style="color:var(--gold)">' + fmt(w.points) + ' b.</p>'
+         : '<p class="muted text-sm mt-2">bez víťaza</p>') + '</div>';
+  }).join('');
+  return '<section class="card gold-frame"><div class="flex flex-wrap items-baseline justify-between gap-2">' + head + '<span class="chip">' + esc(h.label) + '</span></div>' +
+    '<div class="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">' + cards + '</div></section>';
+}
+function fanHTML(){
+  const f = topFan();
+  return '<section class="card mt-5" style="border:2px dashed var(--gold-deep)"><h2 class="font-display font-extrabold text-2xl">⭐ Fanúšik mesiaca</h2>' +
+    '<p class="muted mt-1">Aktuálne najväčšia podpora:</p>' +
+    '<p class="font-display font-extrabold text-2xl mt-1" style="color:var(--gold);overflow-wrap:anywhere">' + (f ? '👑 ' + esc(f.name) + ' (' + hlasov(f.votes) + ')' : 'Zatiaľ bez hlasovania. Buď prvý!') + '</p>' +
+    '<div class="mt-4"><label class="lbl" for="nick">Tvoje meno alebo prezývka</label>' +
+    '<div class="flex flex-wrap gap-2"><input id="nick" class="field" style="flex:1;min-width:12rem" maxlength="30" autocomplete="nickname" value="' + esc(state.nick) + '" placeholder="Napíš svoje meno alebo prezývku">' +
+    '<button class="btn btn-primary" data-act="save-nick">Uložiť meno</button></div>' +
+    '<p class="text-xs muted mt-2">Meno sa pripíše k tvojim hlasom. Fanúšikom mesiaca sa stáva ten, kto ohodnotí najviac skladieb.</p></div></section>';
+}
+// ===== BANNERY (4 boxy — rovnaký CZ/SK štýl, CTA: Prejsť na YouTube) =====
+// Všetky 4 sloty (top, mid, side, bottom) sú natvrdo z BANNERS_DEFAULT.
+const BANNER_CTA = 'Prejsť na YouTube';
+const BANNER_SLOTS = ['top', 'mid', 'side', 'bottom'];
+const BANNER_HARDCODED_SLOTS = { top: true, mid: true, side: true, bottom: true };
+const BANNER_ICONS = ['▶', '▶', '▶', '▶'];
+const BANNERS_DEFAULT = [
+  {
+    title: 'MIDAJKO Feat. ALEX - Zhasni svetlo',
+    text: 'MIDAJKO Feat. ALEX - ZHASNI SVETLO (OFFICIAL video). Sledujte klip na YouTube.',
+    button: BANNER_CTA,
+    url: 'https://youtu.be/F1mSD5du1nc?si=P808FFRpeLMGY1CN',
+    image: 'https://img.youtube.com/vi/F1mSD5du1nc/maxresdefault.jpg',
+    label: 'Reklama, CZ/SK partner',
+    show: true
+  },
+  {
+    title: 'Gipsy Titanic - Simonka',
+    text: 'Gipsy Titanic - SIMONKA (OFFICIAL VIDEO 2026). Pozrite si klip na YouTube.',
+    button: BANNER_CTA,
+    url: 'https://youtu.be/D_HFdvJMp08?si=_gnjLnVlDRZG7rmv',
+    image: 'https://img.youtube.com/vi/D_HFdvJMp08/maxresdefault.jpg',
+    label: 'Reklama pre kapely',
+    show: true
+  },
+  {
+    title: 'Gipsi Kajkos - Dubaj',
+    text: 'Gipsi kajkos - Dubaj (OFFICIAL video). Pozrite si klip na YouTube.',
+    button: BANNER_CTA,
+    url: 'https://youtu.be/v8RbRicsuWM?si=pQFpMMwDE_93szzY',
+    image: 'https://img.youtube.com/vi/v8RbRicsuWM/maxresdefault.jpg',
+    label: 'Reklama pre kapely',
+    show: true
+  },
+  {
+    title: 'Gipsy Tomi - Ši nadherna moja láska',
+    text: 'Gipsy Tomi - Ši nadherna moja láska. Sledujte klip na YouTube.',
+    button: BANNER_CTA,
+    url: 'https://youtu.be/pIpJrwqgqfU?si=5Ujdr4G5aF-uNjTB',
+    image: 'https://img.youtube.com/vi/pIpJrwqgqfU/maxresdefault.jpg',
+    label: 'Novinky',
+    show: true
+  }
+];
+
+function safeHttps(u){
+  try{
+    let t = String(u || '').trim().replace(/\s+/g, '');
+    if (!t) return '';
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(t)) t = 'https://' + t.replace(/^\/+/, '');
+    const x = new URL(t);
+    return x.protocol === 'https:' ? x.href : '';
+  }catch(e){ return ''; }
+}
+function safeImg(u){
+  const t = String(u || '').trim();
+  if (/^data:image\/(webp|png|jpeg|gif);base64,[a-z0-9+\/=]+$/i.test(t)) return t;
+  return safeHttps(t);
+}
+function bannerRowFromDb(r, fallback){
+  const b = Object.assign({}, fallback || {});
+  if (!r) return b;
+  if (r.title != null && String(r.title).trim()) b.title = String(r.title).trim();
+  const body = (r.body_text != null ? r.body_text : r.alt_text);
+  if (body != null && String(body).trim()) b.text = String(body).trim();
+  if (r.label != null && String(r.label).trim()) b.label = String(r.label).trim();
+  if (r.image_url != null && String(r.image_url).trim()) b.image = String(r.image_url).trim();
+  if (r.link_url != null && String(r.link_url).trim()) b.url = String(r.link_url).trim();
+  b.button = BANNER_CTA;
+  b.show = r.is_active !== false;
+  return b;
+}
+function mergeBannersFromDb(rows){
+  const bySlot = {};
+  (rows || []).forEach(r => { if (r && BANNER_SLOTS.indexOf(r.slot) >= 0) bySlot[r.slot] = r; });
+  return BANNER_SLOTS.map((slot, i) => {
+    // Sloty mid/side/bottom: vždy natvrdo z BANNERS_DEFAULT (neprepisuje ich Supabase).
+    if (BANNER_HARDCODED_SLOTS[slot]) return Object.assign({}, BANNERS_DEFAULT[i]);
+    return bannerRowFromDb(bySlot[slot], BANNERS_DEFAULT[i]);
+  });
+}
+function renderBanners(list){
+  const box = $('#banners'); if (!box) return;
+  const html = list.map((b, i) => {
+    if (b.show === false) return '';
+    const url = safeHttps(b.url);
+    const vid = ytId(b.url || '');
+    let img = safeImg(b.image), fit = 'cover';
+    if (!img && vid){ img = 'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg'; fit = 'cover'; }
+    const tag = url ? 'a' : 'div';
+    const attrs = url ? ' href="' + esc(url) + '" target="_blank" rel="noopener noreferrer"' : '';
+    const media = '<div class="banner-media' + (img && fit === 'contain' ? ' fit-contain' : '') + '"' + (img && fit === 'contain' ? ' style="--bg:url(&quot;' + esc(img) + '&quot;)"' : '') + '><span aria-hidden="true">' + BANNER_ICONS[i] + '</span>' +
+      (img ? '<img data-bimg src="' + esc(img) + '" alt="' + esc(b.title) + '" loading="lazy" referrerpolicy="no-referrer">' : '') +
+      (url ? '<span class="banner-play" aria-hidden="true"></span>' : '') + '</div>';
+    return '<' + tag + ' class="banner"' + attrs + '>' +
+      '<span class="banner-label">' + esc(b.label || 'Reklama, CZ/SK partner') + '</span>' + media +
+      '<h3 class="font-display font-extrabold" style="color:var(--gold);line-height:1.2">' + esc(b.title) + '</h3>' +
+      (b.text ? '<p class="muted text-sm">' + esc(b.text) + '</p>' : '') +
+      (url ? '<span class="btn btn-primary btn-sm">' + esc(BANNER_CTA) + '</span>' : '') +
+    '</' + tag + '>';
+  }).join('');
+  box.innerHTML = html;
+  const sec = $('#bannerSection'); if (sec) sec.style.display = html ? '' : 'none';
+  document.querySelectorAll('#banners img[data-bimg]').forEach(im => im.addEventListener('error', () => im.remove()));
+}
+async function loadBanners(){
+  try{
+    const { data, error } = await sb().from('banners').select('slot,title,body_text,label,image_url,link_url,alt_text,is_active,sort_order').order('sort_order', { ascending: true });
+    if (error) throw error;
+    if (data && data.length){
+      renderBanners(mergeBannersFromDb(data));
+      return;
+    }
+  }catch(err){
+    console.warn('Bannery: používam predvolené YouTube údaje (' + (err && err.message ? err.message : err) + ')');
+  }
+  renderBanners(BANNERS_DEFAULT.map(b => Object.assign({}, b)));
+}
+
+function currentShareUrl(){
+  try{
+    const l = window.location;
+    if (l.origin && l.origin !== 'null') return l.origin + String(l.pathname || '/').replace(/index\.html$/i, '');
+    return String(l.href || '').split('#')[0].split('?')[0];
+  }catch(e){ return ''; }
+}
+const SHARE_URL = currentShareUrl();
+const SHARE_TEXT = 'Hlasuj za najlepšie skladby mesiaca v Hitparáde TopRom!';
+const SHARE_ICONS = {
+  fb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.9v3h2.6V21h3z"/></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.9L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg>',
+  link: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+};
+function shareRowHTML(compact){
+  const u = encodeURIComponent(SHARE_URL), t = encodeURIComponent(SHARE_TEXT);
+  return '<div class="share-row' + (compact ? ' compact' : '') + '">' +
+    '<a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u=' + u + '" target="_blank" rel="noopener noreferrer" aria-label="Zdieľať na Facebooku">' + SHARE_ICONS.fb + '<span>Facebook</span></a>' +
+    '<a class="share-btn" href="https://twitter.com/intent/tweet?url=' + u + '&text=' + t + '" target="_blank" rel="noopener noreferrer" aria-label="Zdieľať na X (Twitter)">' + SHARE_ICONS.x + '<span>X</span></a>' +
+    '<button class="share-btn" type="button" data-act="share-copy" aria-label="Kopírovať odkaz">' + SHARE_ICONS.link + '<span>Kopírovať odkaz</span></button>' +
+  '</div>';
+}
+function shareCardHTML(){
+  return '<section class="card gold-frame mt-5" aria-labelledby="shareH"><h2 id="shareH" class="font-display font-extrabold text-xl">Zdieľajte hitparádu</h2>' +
+    '<p class="muted mt-1 text-sm">Pošlite odkaz kamarátom a fanúšikom, nech tiež hlasujú.</p><div class="mt-3">' + shareRowHTML(false) + '</div><div class="mt-4">' + viewsBadgeHTML() + '</div></section>';
+}
+function renderShareFooter(){
+  const el = $('#shareFooter');
+  if (el) el.innerHTML = '<p class="mb-2 text-xs muted">Zdieľať hitparádu</p>' + shareRowHTML(true) + '<div class="mt-3">' + viewsBadgeHTML() + '</div>';
+}
+// ===== POČÍTADLO ZHLIADNUTÍ (Supabase: tabuľka site_stats, funkcie register_view / get_views) =====
+const EYE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3" fill="#D1121F" stroke="#D1121F"/></svg>';
+function viewsLabel(n){ return n === 1 ? 'zhliadnutie' : (n >= 2 && n <= 4) ? 'zhliadnutia' : 'zhliadnutí'; }
+function viewsInner(){
+  const n = state.views;
+  if (n == null || isNaN(n)) return '';
+  return EYE_ICON + '<b>' + fmt(n) + '</b><span>' + viewsLabel(n) + '</span>';
+}
+function viewsBadgeHTML(){
+  return '<span class="views-badge views" title="Celkový počet zhliadnutí hitparády"' + (state.views == null ? ' hidden' : '') + '>' + viewsInner() + '</span>';
+}
+function renderViews(){
+  document.querySelectorAll('.views-badge').forEach(el => { el.innerHTML = viewsInner(); el.hidden = (state.views == null); });
+}
+// Návšteva sa započíta raz za reláciu prehliadača (nie pri každom prepnutí stránky v aplikácii)
+async function trackViews(){
+  let total = null;
+  try{
+    let counted = false;
+    try{ counted = sessionStorage.getItem('toprom-view-counted') === '1'; }catch(e){}
+    if (counted){ total = await rpc('get_views'); }
+    else {
+      total = await rpc('register_view');
+      try{ sessionStorage.setItem('toprom-view-counted', '1'); }catch(e){}
+    }
+  }catch(err){ console.warn('Počítadlo zhliadnutí: ' + err.message); }
+  state.views = (total == null || isNaN(Number(total))) ? null : Number(total);
+  renderViews();
+}
+
+async function copyShareLink(){
+  try{
+    if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(SHARE_URL);
+    else {
+      const ta = document.createElement('textarea'); ta.value = SHARE_URL; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    toast('Odkaz skopírovaný.');
+  }catch(err){ toast('Kopírovanie sa nepodarilo. Odkaz: ' + SHARE_URL); }
+}
+function artistCardHTML(){
+  const iban = ARTIST_IBAN.trim(), msg = ARTIST_MESSENGER.trim();
+  const ibanHTML = iban
+    ? '<div class="mt-2 flex flex-wrap items-center gap-2"><code class="chip" style="font-size:1rem;letter-spacing:.04em">' + esc(iban.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim()) + '</code>' +
+      '<button class="btn btn-ghost btn-sm" data-act="copy-iban">Kopírovať IBAN</button></div>'
+    : '<p class="mt-2 muted"><i>IBAN bude čoskoro doplnený.</i></p>';
+  const msgBtn = /^https:\/\//i.test(msg)
+    ? '<p class="mt-3"><a class="btn btn-primary" style="font-size:1rem;padding:.7rem 1.3rem" href="' + esc(msg) + '" target="_blank" rel="noopener noreferrer">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C6.5 2 2 6.2 2 11.4c0 2.9 1.4 5.5 3.7 7.2V22l3.4-1.9c.9.3 1.9.4 2.9.4 5.5 0 10-4.2 10-9.4S17.5 2 12 2zm1 12.6-2.6-2.7-5 2.7 5.5-5.8 2.6 2.7 5-2.7-5.5 5.8z"/></svg>' +
+      'Napísať na Messenger</a></p>'
+    : '<p class="mt-2 muted"><i>Odkaz na Messenger bude čoskoro doplnený.</i></p>';
+  const step = (n, body) => '<li class="flex gap-3"><span class="font-display font-extrabold shrink-0" style="width:2rem;height:2rem;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center">' + n + '</span><div class="min-w-0 flex-1">' + body + '</div></li>';
+  return '<section class="card gold-frame" id="pre-interpretov" aria-labelledby="artistH">' +
+    '<h2 id="artistH" class="font-display font-extrabold text-2xl sm:text-3xl">Chcete zaradiť svoju skladbu do Hitparády TopRom?</h2>' +
+    '<ol class="mt-5 grid gap-5" style="list-style:none;padding:0;margin:0">' +
+      step(1, '<p class="font-bold">Poplatok za zaradenie: <span style="color:var(--gold)">' + esc(ARTIST_FEE) + '</span> na môj slovenský IBAN</p>' + ibanHTML) +
+      step(2, '<p class="font-bold">Po platbe kliknite na tlačidlo „Napísať na Messenger“</p><p class="muted">Pošlite mi odkaz na YouTube, názov skladby a meno z platby.</p>' + msgBtn) +
+      step(3, '<p class="font-bold">Po kontrole v banke vám skladbu obratom pridám do hitparády</p>') +
+    '</ol></section>';
+}
+function ratePanelHTML(s){
+  const mine = state.mine[s.id];
+  let btns = '';
+  for (let n = 1; n <= 10; n++) btns += '<button class="score ' + (mine === n ? 'on' : '') + '" data-act="vote" data-id="' + s.id + '" data-score="' + n + '" aria-label="' + n + ' ' + (n === 1 ? 'bod' : n < 5 ? 'body' : 'bodov') + '">' + n + '</button>';
+  const hasNick = !!normalizeNick(state.nick || local.nick);
+  const hint = mine
+    ? 'Už ste hlasovali (' + mine + ' b.). Hlas môžete zmeniť, v súčte sa počíta len jeden.'
+    : (hasNick
+      ? 'Koľko bodov dáte skladbe? (1 = najmenej, 10 = najviac)'
+      : 'Koľko bodov dáte skladbe? Po výbere bodov zadáte meno alebo prezývku.');
+  return '<div class="rate-panel"><p class="text-sm muted mb-2">' + hint + '</p>' +
+    '<div class="rate-grid" role="group" aria-label="Pridelenie bodov">' + btns + '</div>' +
+    (mine ? '<button class="btn btn-ghost btn-sm mt-3" data-act="unvote" data-id="' + s.id + '">Zrušiť moje hodnotenie</button>' : '') + '</div>';
+}
+const miniDisc = rev => '<span class="mini-disc' + (rev ? ' rev' : '') + '" aria-hidden="true" style="--t:' + (rev ? 7 : 5) + 's"><span class="vinyl-hub-fallback">JN</span><span class="vinyl-hub"></span></span>';
+function songRowHTML(s,i,c,max){
+  const mine = state.mine[s.id], open = ui.open === s.id, hasVideo = !!ytId(s.yt);
+  const playIcon = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>';
+  return '<li id="song-' + s.id + '" class="song ' + (ui.flash === s.id ? 'flash' : '') + '" style="--a:' + c.accent + '">' +
+    '<div class="song-main">' +
+      '<span class="rank ' + (i < 3 ? 'top' : '') + '" aria-label="Poradie ' + (i+1) + '">' + (i+1) + '</span>' +
+      '<div class="min-w-0 flex-1"><p class="font-bold truncate">' + esc(s.artist) + '</p>' +
+      '<p class="text-sm muted truncate">' + esc(s.title) + '</p></div>' +
+      '<div class="text-right shrink-0"><p class="pts" style="color:var(--gold)">' + fmt(s.points) + '</p><p class="text-xs muted">bodov</p></div>' +
+    '</div>' +
+    '<div class="song-meta"><span>' + fmt(s.votes) + ' hlasov</span><span>priemer ' + avg(s) + '</span></div>' +
+    '<div class="song-actions">' + miniDisc(false) +
+      (hasVideo
+        ? '<a class="btn btn-play" href="' + esc(playUrl(s)) + '" target="_blank" rel="noopener noreferrer" aria-label="Prehrať video: ' + esc(s.artist + ' ' + s.title) + ' (otvorí sa na YouTube v novom okne)">' + playIcon + 'Prehrať video</a>'
+        : '<button class="btn btn-play" disabled>' + playIcon + 'Bez videa</button>') +
+      '<button class="btn btn-rate ' + (mine ? 'is-set' : '') + '" data-act="toggle" data-id="' + s.id + '" aria-expanded="' + open + '">' + (mine ? 'Moje body: ' + mine : 'Ohodnotiť') + '</button>' + miniDisc(true) +
+    '</div>' +
+    '<div class="rate-slot">' + (open ? ratePanelHTML(s) : '') + '</div>' +
+    '<span class="bar" style="width:' + Math.round(s.points / max * 100) + '%"></span>' +
+  '</li>';
+}
+// Čiastočné aktualizácie: prehrávané video sa pri otváraní hodnotenia nerestartuje
+function syncRate(id){
+  const s = state.songs.find(x => x.id === id), el = document.getElementById('song-' + id); if (!s || !el) return;
+  el.querySelector('.rate-slot').innerHTML = ui.open === id ? ratePanelHTML(s) : '';
+  el.querySelector('[data-act="toggle"]').setAttribute('aria-expanded', ui.open === id);
+}
+function toggleRate(id){
+  const prev = ui.open; ui.open = prev === id ? null : id;
+  if (prev) syncRate(prev); if (ui.open) syncRate(id);
+  const el = document.getElementById('song-' + id); if (el && ui.open) el.scrollIntoView({ block:'nearest' });
+}
+async function castVote(id, score){
+  const s = state.songs.find(x => x.id === id); if (!s || ui.busy) return;
+  // Pri hodnotení 1–10 najprv vyžadujeme meno/prezývku (ak ešte nie je uložená).
+  let nick = normalizeNick(state.nick || local.nick);
+  if (score > 0){
+    nick = await ensureNickForVote();
+    if (!nick) return;
+  }
+  ui.busy = true;
+  try{
+    await rpc('cast_vote', { p_song:id, p_voter:local.voter, p_score:score, p_nick: nick || null });
+    await loadData();
+    ui.open = null; ui.play = null; ui.flash = id;
+    paintList(s.cat);
+    const pos = ranked(s.cat).findIndex(x => x.id === id) + 1;
+    toast(score ? 'Uložené: ' + score + ' b. Skladba je teraz na ' + pos + '. mieste.' : 'Hodnotenie zrušené.');
+    const el = document.getElementById('song-' + id);
+    if (el) el.scrollIntoView({ block:'center', behavior: reduceMotion() ? 'auto' : 'smooth' });
+    setTimeout(() => { ui.flash = null; }, 1600);
+  }catch(err){ toast('Hlas sa nepodarilo uložiť: ' + err.message); }
+  finally{ ui.busy = false; }
+}
+
+/* ===================== VIEW: VÝSLEDKY ===================== */
+function podiumHTML(rows){
+  const med = [
+    { m:'var(--gold)',   h:'150px', d:'1.0s', e:'🥇', cls:'first' },
+    { m:'var(--silver)', h:'112px', d:'.5s',  e:'🥈', cls:'' },
+    { m:'var(--bronze)', h:'84px',  d:'.1s',  e:'🥉', cls:'' }
+  ];
+  return '<div class="podium">' + [1,0,2].map(i => {
+    const r = rows[i], t = med[i];
+    if (!r) return '<div class="pod"><div class="pedestal" style="--m:var(--line);--h:' + t.h + ';opacity:.4">' + (i+1) + '</div></div>';
+    return '<div class="pod ' + t.cls + '" style="--m:' + t.m + ';--d:' + t.d + '">' +
+      '<div class="pod-info fade"><div class="text-3xl" aria-hidden="true">' + t.e + '</div>' +
+        '<p class="nm">' + esc(r.artist) + '</p><p class="tt">' + esc(r.title) + '</p>' +
+        '<p class="pts mt-1" style="color:' + t.m + '">' + fmt(r.points) + ' b.</p>' +
+        '<p class="text-xs muted">' + fmt(r.votes) + ' hlasov</p></div>' +
+      '<div class="pedestal rise" style="--h:' + t.h + '" aria-label="' + (i+1) + '. miesto">' + (i+1) + '</div></div>';
+  }).join('') + '</div>';
+}
+function viewResults(id, mk){
+  const c = CATS[id];
+  const hist = state.history.find(h => h.key === mk);
+  const official = !!hist;
+  const rows = official ? (hist.cats[id] || []) : ranked(id).slice(0,10).map(rowOf);
+  const label = official ? hist.label : monthLabel(state.month);
+  const q = official ? '?m=' + hist.key : '';
+
+  const tabs = Object.values(CATS).map(x =>
+    '<a class="tab" style="--a:' + x.accent + '" ' + (x.id === id ? 'aria-current="page"' : '') + ' href="#/vysledky/' + x.id + q + '"><span aria-hidden="true">' + x.icon + '</span>' + x.short + '</a>').join('');
+  const opts = '<option value="live"' + (!official ? ' selected' : '') + '>Priebežne: ' + esc(monthLabel(state.month)) + '</option>' +
+    state.history.map(h => '<option value="' + esc(h.key) + '"' + (official && h.key === hist.key ? ' selected' : '') + '>Uzavreté: ' + esc(h.label) + '</option>').join('');
+
+  const hasVotes = rows.length && rows[0].points > 0;
+  const rest = rows.filter(r => r.votes > 0).slice(3).map((r,i) =>
+    '<li class="flex items-center gap-3 py-2.5" style="border-top:1px solid var(--line)">' +
+    '<span class="rank" style="width:2rem;font-size:1.2rem">' + (i+4) + '</span>' +
+    '<div class="min-w-0 flex-1"><p class="font-semibold truncate">' + esc(r.artist) + '</p><p class="text-sm muted truncate">' + esc(r.title) + '</p></div>' +
+    '<span class="font-bold tabular-nums">' + fmt(r.points) + ' b.</span></li>').join('');
+
+  const fame = state.history.length
+    ? '<div class="grid gap-3 sm:grid-cols-2">' + state.history.map(h =>
+        '<article class="card"><h3 class="font-display font-extrabold text-lg">' + esc(h.label) + '</h3><ul class="mt-2" style="list-style:none;padding:0;margin:0">' +
+        Object.values(CATS).map(x => {
+          const w = (h.cats[x.id] || [])[0];
+          return '<li class="flex gap-2 py-1.5 text-sm" style="border-top:1px solid var(--line)"><span aria-hidden="true">' + x.icon + '</span><span class="min-w-0"><span class="font-semibold">' +
+            (w ? esc(w.artist) + '</span> <span class="muted">' + esc(w.title) + ', ' + fmt(w.points) + ' b.</span>' : 'bez víťaza</span>') + '</span></li>';
+        }).join('') + '</ul>' + (h.fan ? '<p class="text-sm mt-2" style="color:var(--gold)">⭐ Fanúšik mesiaca: <b>' + esc(h.fan.name) + '</b> (' + hlasov(h.fan.votes) + ')</p>' : '') + '</article>').join('') + '</div>'
+    : '<div class="card muted">Zatiaľ nebol uzavretý žiadny mesiac. Po uzávierke sa tu objavia víťazi každého mesiaca. Mesiac uzatvára správca v sekcii <a href="#/sprava" style="color:var(--text);text-decoration:underline">Správa</a>.</div>';
+
+  $('#app').innerHTML =
+    '<h1 class="font-display font-extrabold text-3xl sm:text-5xl">Mesačné vyhodnotenie</h1>' +
+    '<div class="mt-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">' +
+      '<div class="scroller -mx-4 px-4 sm:mx-0 sm:px-0"><div class="flex gap-2" style="width:max-content">' + tabs + '</div></div>' +
+      '<div><label class="lbl sr-only" for="period">Obdobie</label><select id="period" class="field" data-cat="' + id + '" style="color-scheme:dark">' + opts + '</select></div>' +
+    '</div>' +
+    '<section class="card gold-frame mt-6" style="--a:' + c.accent + '">' +
+      '<div class="flex flex-wrap items-baseline justify-between gap-2 mb-6">' +
+        '<h2 class="font-display font-extrabold text-2xl" style="color:' + c.accent + '">' + c.name + '</h2>' +
+        '<span class="chip">' + (official ? 'Oficiálne výsledky: ' : 'Priebežné poradie: ') + esc(label) + '</span></div>' +
+      (rows.length ? (hasVotes ? podiumHTML(rows.filter(r => r.votes > 0)) : '<p class="muted text-center py-8">Zatiaľ bez hlasov. Pódium sa vyplní, keď ľudia začnú hlasovať.</p>')
+                   : '<p class="muted text-center py-8">V tejto kategórii nie sú žiadne skladby.</p>') +
+      (!official && rows.length ? '<p class="text-center text-sm muted mt-5">Konečné poradie bude známe po uzávierke mesiaca.</p>' : '') +
+      (rest ? '<h3 class="font-display font-extrabold text-lg mt-8 mb-1">Ďalšie miesta</h3><ol style="list-style:none;padding:0;margin:0">' + rest + '</ol>' : '') +
+    '</section>' +
+    '<h2 class="font-display font-extrabold text-2xl mt-10 mb-3">Sieň slávy</h2>' + fame;
+}
+
+/* ===================== VIEW: SPRÁVA ===================== */
+function wipeCardHTML(){
+  if (!ui.admin) return '';
+  const opts = '<option value="all">Všetky kategórie (' + state.songs.length + ' skladieb)</option>' +
+    Object.values(CATS).map(c => '<option value="' + c.id + '">' + c.icon + ' ' + c.name + ' (' + state.songs.filter(x => x.cat === c.id).length + ')</option>').join('');
+  return '<section class="card mt-5" style="border-color:var(--red)"><h2 class="font-display font-extrabold text-xl">Vymazať všetky skladby / Nový mesiac</h2>' +
+    '<p class="muted text-sm mt-1">Natrvalo vymaže všetky skladby vrátane názvov, YouTube odkazov, bodov a hlasov zo zvolenej kategórie alebo zo všetkých. Potom môžete pridať nové skladby od nuly. Výsledky sa pritom neukladajú do Siene slávy. Ak ich chcete uložiť, najprv použite „Uzavrieť mesiac a začať nový“.</p>' +
+    '<div class="mt-4 flex flex-wrap items-end gap-2"><div style="min-width:15rem;flex:1"><label class="lbl" for="wipeCat">Čo vymazať</label>' +
+    '<select id="wipeCat" class="field" style="color-scheme:dark">' + opts + '</select></div>' +
+    '<button class="btn btn-danger" data-act="wipe">Vymazať všetky skladby</button></div></section>';
+}
+
+function viewAdmin(){
+  const sel = CATS[ui.lastCat] ? ui.lastCat : 'czsk';
+  const catOpts = Object.values(CATS).map(c => '<option value="' + c.id + '"' + (c.id === sel ? ' selected' : '') + '>' + c.icon + ' ' + c.name + '</option>').join('');
+
+  const addForm =
+    '<section class="card mt-6" id="add"><h2 class="font-display font-extrabold text-xl">Pridať skladbu</h2>' +
+    '<p class="muted text-sm mt-1">Skladba sa okamžite uloží do vybranej kategórie s 0 bodmi a 0 hlasmi. Body jej potom pridelia hlasy.</p>' +
+    '<form id="addForm" class="mt-4 grid gap-4 sm:grid-cols-2" autocomplete="off">' +
+      '<div><label class="lbl" for="f-artist">1. Názov interpreta</label><input class="field" id="f-artist" name="artist" maxlength="80" required></div>' +
+      '<div><label class="lbl" for="f-title">2. Názov skladby</label><input class="field" id="f-title" name="title" maxlength="80" required></div>' +
+      '<div class="sm:col-span-2"><label class="lbl" for="f-yt">3. YouTube odkaz (URL)</label><input class="field" id="f-yt" name="yt" inputmode="url" required placeholder="https://www.youtube.com/watch?v=..."><p class="text-xs muted mt-1">Video sa otvorí na YouTube v novom okne.</p></div>' +
+      '<div class="sm:col-span-2"><label class="lbl" for="f-cat">4. Kategória</label><select class="field" id="f-cat" name="cat" style="color-scheme:dark">' + catOpts + '</select></div>' +
+      '<div class="sm:col-span-2"><button class="btn btn-primary" type="submit" style="font-size:1rem;padding:.75rem 1.4rem">Pridať skladbu</button></div>' +
+      '<p id="formMsg" class="sm:col-span-2 text-sm" style="min-height:1.25rem" role="status"></p>' +
+    '</form></section>';
+
+  const tools = ui.admin
+    ? '<section class="card mt-5"><div class="flex flex-wrap items-center justify-between gap-2"><h2 class="font-display font-extrabold text-xl">Mesiac: ' + esc(monthLabel(state.month)) + '</h2>' +
+      '<button class="btn btn-ghost btn-sm" data-act="lock">Zamknúť nástroje</button></div>' +
+      '<p class="muted mt-1 text-sm">' + esc(monthStatus()) + '. Uzávierka uloží poradie (Top 10 každej kategórie) do Siene slávy, vynuluje body a začne ' + esc(monthLabel(nextKey(state.month))) + '.</p>' +
+      '<label class="flex items-center gap-2 mt-4 text-sm font-semibold"><input type="checkbox" id="clearSongs" class="w-4 h-4"> Pri novom mesiaci odstrániť aj všetky skladby</label>' +
+      '<div class="mt-4 flex flex-wrap gap-2">' +
+        '<button class="btn btn-primary" data-act="close-month">Uzavrieť mesiac a začať nový</button>' +
+        '<button class="btn btn-ghost" data-act="reset-points">Len vynulovať body</button>' +
+      '</div></section>'
+    : '<form id="pinForm" class="card mt-5" autocomplete="off"><h2 class="font-display font-extrabold text-xl">Prihlásenie správcu</h2>' +
+      '<p class="muted text-sm mt-1">Zadajte PIN správcu. Bez neho nemožno pridávať ani mazať skladby.</p>' +
+      '<div class="mt-3 flex flex-wrap items-end gap-2"><div style="min-width:10rem"><label class="lbl" for="pin">PIN správcu</label>' +
+      '<input id="pin" name="pin" type="password" inputmode="numeric" class="field" required></div>' +
+      '<button class="btn btn-ghost" type="submit">Odomknúť</button></div>' +
+      '<p id="pinMsg" class="text-sm mt-2" style="color:#FF8FA3;min-height:1.25rem" role="alert"></p></form>';
+
+  const lists = Object.values(CATS).map(c => {
+    const list = ranked(c.id);
+    return '<div class="mt-4"><div class="flex items-center justify-between gap-2"><h3 class="font-bold" style="color:' + c.accent + '">' + c.icon + ' ' + c.name + ' <span class="muted font-normal text-sm">(' + list.length + ')</span></h3>' +
+      (ui.admin && list.length ? '<button class="btn btn-ghost btn-sm" data-act="wipe" data-cat="' + c.id + '">Vymazať kategóriu</button>' : '') + '</div>' +
+      (list.length ? '<ul style="list-style:none;padding:0;margin:.4rem 0 0">' + list.map(s =>
+        '<li class="flex items-center gap-3 py-2" style="border-top:1px solid var(--line)"><span class="min-w-0 flex-1 truncate"><span class="font-semibold">' + esc(s.artist) + '</span> <span class="muted">' + esc(s.title) + '</span></span>' +
+        '<span class="text-sm muted tabular-nums">' + fmt(s.points) + ' b.</span>' +
+        (ui.admin ? '<button class="btn btn-ghost btn-sm" data-act="delete" data-id="' + s.id + '" aria-label="Odstrániť skladbu ' + esc(s.artist + ' ' + s.title) + '">Odstrániť</button>' : '') + '</li>').join('') + '</ul>'
+        : '<p class="muted text-sm mt-1">Zatiaľ žiadne skladby. Pridajte prvú vo formulári vyššie.</p>') + '</div>';
+  }).join('');
+
+  $('#app').innerHTML =
+    '<h1 class="font-display font-extrabold text-3xl sm:text-5xl">Správa</h1>' +
+    '<p class="muted mt-2">Administračný panel Hitparády TopRom. Tu pridávate skladby, uzatvárate mesiac a spravujete zoznamy.</p>' +
+    (ui.admin ? addForm : '') + tools + wipeCardHTML() +
+    '<section class="card mt-5"><h2 class="font-display font-extrabold text-xl">Skladby v kategóriách</h2>' + lists + '</section>';
+}
+
+/* ===================== AKCIE SPRÁVCU ===================== */
+
+
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const act = t.dataset.act, id = t.dataset.id;
+  if (act === 'toggle'){ toggleRate(id); }
+  else if (act === 'vote'){ castVote(id, Number(t.dataset.score)); }
+  else if (act === 'unvote'){ castVote(id, 0); }
+  else if (act === 'retry'){ boot(); }
+  else if (act === 'lock'){ ui.admin = false; ui.pin = ''; viewAdmin(); }
+  else if (act === 'save-nick'){
+    const v = saveNick($('#nick') ? $('#nick').value : '');
+    toast(v ? 'Meno uložené: ' + v : 'Meno odstránené.'); viewHome();
+  }
+  else if (act === 'copy-iban'){
+    try{ await navigator.clipboard.writeText(ARTIST_IBAN.trim()); toast('IBAN skopírovaný.'); }
+    catch(err){ toast('Kopírovanie sa nepodarilo, označte IBAN ručne.'); }
+  }
+  else if (act === 'share-copy'){ copyShareLink(); }
+  else if (ui.admin){ adminAction(act, t); }
+});
+
+/* ===================== PRIHLÁSENIE SPRÁVCU A PRIDANIE SKLADBY ===================== */
+// PIN: orezanie bielych znakov a neviditeľných znakov (kopírovanie, mobilná klávesnica)
+const cleanPin = v => String(v == null ? '' : v).normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+
+// Zrozumiteľná správa podľa typu chyby z Supabase
+function rpcErrorText(err){
+  const m = String((err && err.message) || err || '');
+  if (/Nesprávny PIN/i.test(m)) return 'Nesprávny PIN.';
+  if (/Failed to fetch|NetworkError|Load failed|network/i.test(m)) return 'Nedá sa pripojiť k databáze. Skontrolujte internet a SUPABASE_URL.';
+  if (/Could not find the function|PGRST202|schema cache/i.test(m)) return 'V databáze chýba funkcia správcu. Spustite celý súbor supabase-setup.sql v SQL Editore.';
+  if (/crypt|gen_salt|pgcrypto/i.test(m)) return 'V databáze chýba rozšírenie pgcrypto. Spustite supabase-setup.sql znova.';
+  if (/Invalid API key|apikey|JWT/i.test(m)) return 'Neplatný kľúč SUPABASE_ANON_KEY.';
+  if (/permission denied/i.test(m)) return 'Databáza odmietla prístup. Skontrolujte sekciu GRANT na konci supabase-setup.sql.';
+  return 'Chyba: ' + m;
+}
+
+// Overí PIN na serveri (RPC admin_check). Pri úspechu odomkne panel a zapamätá si PIN do ďalších akcií.
+async function verifyAdminPin(rawPin){
+  const pin = cleanPin(rawPin);
+  if (!pin) return { ok:false, message:'Zadajte PIN.' };
+  try{
+    const ok = await rpc('admin_check', { p_pin: pin });
+    if (ok === true){ ui.admin = true; ui.pin = pin; return { ok:true }; }
+    return { ok:false, message:'Nesprávny PIN.' };
+  }catch(err){
+    ui.admin = false; ui.pin = '';
+    return { ok:false, message: rpcErrorText(err) };
+  }
+}
+
+// Pridá skladbu cez RPC admin_add_song. Nová skladba vždy začína s 0 bodmi a 0 hlasmi.
+async function addNewSong(f){
+  const msg = (t, ok) => { const m = $('#formMsg'); if (m){ m.textContent = t; m.style.color = ok ? '#7CE3B0' : '#FF8FA3'; } };
+  const btn = f.querySelector('button[type="submit"]');
+  const artist = String(f.artist.value).trim().replace(/\s+/g, ' ').slice(0, 80);
+  const title  = String(f.title.value).trim().replace(/\s+/g, ' ').slice(0, 80);
+  const cat = f.cat.value;
+  const vid = ytId(String(f.yt.value).trim());
+
+  if (!ui.admin || !ui.pin){ viewAdmin(); toast('Najprv sa prihláste PIN-om.'); return; }
+  if (!artist || !title) return msg('Vyplňte interpreta aj názov skladby.');
+  if (!CATS[cat]) return msg('Vyberte platnú kategóriu.');
+  if (!vid) return msg('Zadajte platný YouTube odkaz, napr. https://www.youtube.com/watch?v=... alebo https://youtu.be/...');
+
+  if (btn) btn.disabled = true;
+  msg('Ukladám…', true);
+  try{
+    await rpc('admin_add_song', { p_pin: ui.pin, p_cat: cat, p_artist: artist, p_title: title, p_yt: 'https://www.youtube.com/watch?v=' + vid });
+    await loadData();
+    ui.lastCat = cat; viewAdmin();
+    const m2 = $('#formMsg'); m2.style.color = '#7CE3B0';
+    m2.innerHTML = 'Pridané: <b>' + esc(artist) + ' – ' + esc(title) + '</b> do kategórie ' + esc(CATS[cat].name) + ' (0 bodov). <a href="#/kategoria/' + cat + '" style="text-decoration:underline">Otvoriť hitparádu</a>';
+    $('#f-artist').focus(); toast('Skladba pridaná s 0 bodmi.');
+  }catch(err){
+    if (/Nesprávny PIN/i.test(String(err && err.message))){ ui.admin = false; ui.pin = ''; viewAdmin(); toast('PIN už neplatí, prihláste sa znova.'); }
+    else { msg(rpcErrorText(err)); if (btn) btn.disabled = false; }
+  }
+}
+
+document.addEventListener('submit', async e => {
+  const f = e.target;
+  if (f.id === 'pinForm'){
+    e.preventDefault();
+    const btn = f.querySelector('button[type="submit"]'); if (btn) btn.disabled = true;
+    const res = await verifyAdminPin(f.pin.value);
+    if (res.ok){ viewAdmin(); toast('Správca prihlásený.'); }
+    else { if (btn) btn.disabled = false; $('#pinMsg').textContent = res.message; f.pin.value = ''; f.pin.focus(); }
+  } else if (f.id === 'addForm'){
+    e.preventDefault();
+    addNewSong(f);
+  }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.id === 'period'){
+    const v = e.target.value;
+    location.hash = '#/vysledky/' + e.target.dataset.cat + (v === 'live' ? '' : '?m=' + encodeURIComponent(v));
+  }
+});
+
+/* ===================== ROUTER ===================== */
+function viewLoading(){
+  $('#app').innerHTML = state.error
+    ? '<div class="card gold-frame"><h1 class="font-display font-extrabold text-2xl">Hitparáda sa nenačítala</h1><p class="muted mt-2" style="overflow-wrap:anywhere">' + esc(state.error) + '</p><button class="btn btn-primary mt-4" data-act="retry">Skúsiť znova</button></div>'
+    : '<p class="muted" role="status">Načítavam hitparádu…</p>';
+}
+function renderRoute(){
+  const raw = location.hash.replace(/^#\/?/, '');
+  const [path, qs = ''] = raw.split('?');
+  const seg = path.split('/').filter(Boolean), q = new URLSearchParams(qs);
+  const isCat = seg[0] === 'kategoria' && CATS[seg[1]];
+  const nav = isCat ? '' : seg[0] === 'vysledky' ? 'results' : seg[0] === 'sprava' ? 'admin' : 'home';
+  if (!state.loaded) viewLoading();
+  else if (isCat) viewCat(seg[1]);
+  else if (nav === 'results') viewResults(CATS[seg[1]] ? seg[1] : 'czsk', q.get('m') || 'live');
+  else if (nav === 'admin'){ if (CATS[q.get('cat')]) ui.lastCat = q.get('cat'); viewAdmin(); }
+  else viewHome();
+  document.querySelectorAll('[data-nav]').forEach(a => {
+    if (a.dataset.nav === nav) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+  });
+}
+function route(){ ui.open = null; ui.play = null; renderRoute(); window.scrollTo(0,0); }
+async function adminAction(act, t){
+  try{
+    if (act === 'delete'){
+      const s = state.songs.find(x => x.id === t.dataset.id); if (!s) return;
+      if (await ask('Odstrániť skladbu?', s.artist + ' – ' + s.title + ' zmizne z hitparády aj s bodmi.', 'Odstrániť')){
+        await rpc('admin_delete_song', { p_pin: ui.pin, p_id: s.id }); await loadData(); viewAdmin(); toast('Skladba odstránená.');
+      }
+    } else if (act === 'close-month'){
+      const clear = !!($('#clearSongs') && $('#clearSongs').checked);
+      if (await ask('Uzavrieť ' + monthLabel(state.month) + '?', 'Výsledky sa uložia do Siene slávy, body a hlasy sa vynulujú a začne ďalší mesiac.' + (clear ? ' Skladby budú odstránené.' : ''), 'Uzavrieť mesiac')){
+        await rpc('admin_close_month', { p_pin: ui.pin, p_label: monthLabel(state.month), p_clear: clear });
+        await loadData(); viewAdmin(); toast('Mesiac uzavretý. Začal sa ' + monthLabel(state.month) + '.');
+      }
+    } else if (act === 'reset-points'){
+      if (await ask('Vynulovať body?', 'Všetky body a hlasy všetkých návštevníkov sa vynulujú. Výsledky sa neuložia do Siene slávy.', 'Vynulovať')){
+        await rpc('admin_reset_points', { p_pin: ui.pin }); await loadData(); viewAdmin(); toast('Body vynulované.');
+      }
+    } else if (act === 'wipe'){
+      const sel = t.dataset.cat || ($('#wipeCat') ? $('#wipeCat').value : 'all');
+      const count = state.songs.filter(x => sel === 'all' || x.cat === sel).length;
+      if (!count){ toast('V tejto voľbe nie sú žiadne skladby.'); return; }
+      const label = sel === 'all' ? 'všetkých kategórií' : CATS[sel].name;
+      if (await ask('Vymazať skladby: ' + label + '?', 'Natrvalo sa vymaže ' + count + ' skladieb vrátane názvov, YouTube odkazov, bodov a hlasov všetkých návštevníkov. Výsledky sa neuložia do Siene slávy. Túto akciu nemožno vrátiť.', 'Vymazať natrvalo')){
+        await rpc('admin_wipe', { p_pin: ui.pin, p_cat: sel }); await loadData(); viewAdmin();
+        toast('Vymazané skladby: ' + count + '. Môžete pridať nové.');
+      }
+    }
+  }catch(err){
+    if (/PIN/.test(err.message)){ ui.admin = false; ui.pin = ''; viewAdmin(); toast('PIN už neplatí, prihláste sa znova.'); }
+    else toast('Akcia zlyhala: ' + err.message);
+  }
+}
+window.addEventListener('hashchange', route);
+renderBrand();
+renderShareFooter();
+renderBanners(BANNERS_DEFAULT);
+loadBanners();
+trackViews();
+async function boot(){
+  state.error = ''; state.loaded = false; route();
+  try{ await loadData(); }catch(err){ state.error = err.message; }
+  renderRoute();
+}
+boot();
+// Priebežné obnovovanie rebríčka (hlasy ostatných návštevníkov), ak práve nič nepíšete
+async function poll(){
+  const el = document.activeElement;
+  if (document.visibilityState !== 'visible' || !state.loaded || ui.busy || ui.open || ui.admin) return;
+  if (location.hash.indexOf('#/sprava') === 0) return;
+  if (el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
+  try{ await loadData(); renderRoute(); }catch(err){}
+}
+setInterval(poll, 45000);
+document.addEventListener('visibilitychange', poll);
+})();
+</script>
+<div id="root" hidden></div>
+<script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
