@@ -1118,5 +1118,138 @@ setInterval(poll, 45000);
 document.addEventListener('visibilitychange', poll);
 })();
 </script>
-</body>
+</body><!-- Hitparáda TopRom – Vstavaný YouTube prehrávač (PC + Mobil) -->
+<script>
+(function () {
+  if (window.__topRomWebPlayerLoaded) return;
+  window.__topRomWebPlayerLoaded = true;
+
+  function extractYouTubeId(url) {
+    if (!url || typeof url !== 'string') return null;
+    var patterns = [
+      /(?:youtube\.com|youtube-nocookie\.com)\/watch\/?\?(?:[^#]*&)?v=([A-Za-z0-9_-]{11})/i,
+      /youtu\.be\/([A-Za-z0-9_-]{11})/i,
+      /(?:youtube\.com|youtube-nocookie\.com)\/(?:shorts|embed|live|v)\/([A-Za-z0-9_-]{11})/i
+    ];
+    for (var i = 0; i < patterns.length; i++) {
+      var m = url.match(patterns[i]);
+      if (m && m[1]) return m[1];
+    }
+    return null;
+  }
+
+  function guessTitle(el) {
+    if (!el) return 'Hitparáda TopRom';
+    var card = el.closest && el.closest('article, li, tr, [class*="card"], [class*="song"], [class*="track"], div');
+    if (card) {
+      var h = card.querySelector('h1, h2, h3, h4, strong, [class*="title"], [class*="name"]');
+      if (h && h.innerText) {
+        var t = h.innerText.replace(/\s+/g, ' ').trim();
+        if (t.length >= 2 && t.length <= 90) return t;
+      }
+    }
+    return 'Hitparáda TopRom';
+  }
+
+  // Štýly prehrávača (prispôsobené pre PC aj mobil)
+  var style = document.createElement('style');
+  style.textContent =
+    '#toprom-yt-dock{position:fixed;right:16px;bottom:16px;width:420px;max-width:calc(100vw - 24px);' +
+    'background:#180d22;border:1.5px solid #f2b84b;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.65);' +
+    'z-index:999999;overflow:hidden;font-family:system-ui,-apple-system,sans-serif;color:#fff;display:none;}' +
+    '@media(max-width:640px){#toprom-yt-dock{left:12px;right:12px;bottom:12px;width:auto;max-width:none;}}' +
+    '#toprom-yt-head{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#241333;}' +
+    '#toprom-yt-title{flex:1;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f7f2fa;}' +
+    '.toprom-yt-btn{background:rgba(255,255,255,.1);border:0;color:#fff;border-radius:8px;padding:5px 9px;' +
+    'font-size:12px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}' +
+    '.toprom-yt-btn:hover{background:rgba(242,184,75,.28);}' +
+    '#toprom-yt-frame-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;}' +
+    '#toprom-yt-iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}';
+  document.head.appendChild(style);
+
+  // Vytvorenie okna prehrávača
+  var dock = document.createElement('div');
+  dock.id = 'toprom-yt-dock';
+
+  var head = document.createElement('div');
+  head.id = 'toprom-yt-head';
+
+  var titleEl = document.createElement('div');
+  titleEl.id = 'toprom-yt-title';
+  titleEl.textContent = 'Hitparáda TopRom';
+
+  var extLink = document.createElement('a');
+  extLink.className = 'toprom-yt-btn';
+  extLink.target = '_blank';
+  extLink.rel = 'noopener noreferrer';
+  extLink.textContent = 'YouTube ↗';
+
+  var closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'toprom-yt-btn';
+  closeBtn.textContent = '✕';
+  closeBtn.setAttribute('aria-label', 'Zavrieť prehrávač');
+
+  head.appendChild(titleEl);
+  head.appendChild(extLink);
+  head.appendChild(closeBtn);
+
+  var wrap = document.createElement('div');
+  wrap.id = 'toprom-yt-frame-wrap';
+
+  var iframe = document.createElement('iframe');
+  iframe.id = 'toprom-yt-iframe';
+  iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+  iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+  iframe.setAttribute('allowfullscreen', '');
+
+  wrap.appendChild(iframe);
+  dock.appendChild(head);
+  dock.appendChild(wrap);
+  document.body.appendChild(dock);
+
+  function openInAppPlayer(videoId, titleText) {
+    if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) return;
+    titleEl.textContent = titleText || 'Hitparáda TopRom';
+    extLink.href = 'https://www.youtube.com/watch?v=' + videoId;
+    iframe.src =
+      'https://www.youtube.com/embed/' + videoId +
+      '?autoplay=1&playsinline=1&rel=0&modestbranding=1';
+    dock.style.display = 'block';
+  }
+
+  closeBtn.addEventListener('click', function () {
+    iframe.src = 'about:blank';
+    dock.style.display = 'none';
+  });
+
+  var lastTitle = '';
+
+  // Zachytí kliknutia na všetky <a href="...youtube..."> odkazy
+  document.addEventListener('click', function (e) {
+    lastTitle = guessTitle(e.target);
+    var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!anchor) return;
+    // Ignorovať tlačidlo "YouTube ↗" v našom vlastnom prehrávači
+    if (dock.contains(anchor)) return;
+    var vid = extractYouTubeId(anchor.href);
+    if (vid) {
+      e.preventDefault();
+      e.stopPropagation();
+      openInAppPlayer(vid, guessTitle(anchor));
+    }
+  }, true);
+
+  // Zachytí aj prípad, keď tlačidlo otvára YouTube cez window.open(...)
+  var origOpen = window.open;
+  window.open = function (url) {
+    var vid = extractYouTubeId(typeof url === 'string' ? url : '');
+    if (vid) {
+      openInAppPlayer(vid, lastTitle);
+      return null;
+    }
+    return origOpen ? origOpen.apply(window, arguments) : null;
+  };
+})();
+</script>
 </html>
