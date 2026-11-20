@@ -1118,7 +1118,552 @@ setInterval(poll, 45000);
 document.addEventListener('visibilitychange', poll);
 })();
 </script>
-</body><!-- Hitparáda TopRom – Vstavaný YouTube prehrávač (PC + Mobil) -->
+</body><<!-- === TOPROM MONETIZÁCIA: YOUTUBE ODBER, PARTNERI, GDPR A POVINNÉ STRÁNKY === -->
+<style>
+  #toprom-growth-wrap {
+    max-width: 1120px;
+    margin: 48px auto 120px;
+    padding: 0 16px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #f4efe6;
+    box-sizing: border-box;
+  }
+  #toprom-growth-wrap * { box-sizing: border-box; }
+
+  .tr-card {
+    background: linear-gradient(145deg, #17111e 0%, #100c15 100%);
+    border: 1px solid rgba(242, 184, 75, 0.28);
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  /* YouTube Odber Banner */
+  .tr-yt-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-color: rgba(230, 57, 96, 0.45);
+    background: radial-gradient(circle at top right, rgba(230, 57, 96, 0.16), transparent 55%),
+                linear-gradient(145deg, #1b111c 0%, #100c15 100%);
+  }
+  .tr-yt-info h3 {
+    margin: 0 0 6px;
+    font-size: 1.2rem;
+    color: #f2b84b;
+  }
+  .tr-yt-info p {
+    margin: 0;
+    font-size: 0.94rem;
+    color: #cfc6d8;
+    line-height: 1.45;
+  }
+  .tr-yt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #e62117;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(230, 33, 23, 0.35);
+    transition: transform 0.15s ease, filter 0.15s ease;
+    white-space: nowrap;
+  }
+  .tr-yt-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+  /* Sekcia Partneri */
+  .tr-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tr-section-head h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #f2b84b;
+    letter-spacing: 0.3px;
+  }
+  .tr-section-head span {
+    font-size: 0.85rem;
+    color: #a99db5;
+  }
+  .tr-partners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .tr-partner-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(242, 184, 75, 0.18);
+    border-radius: 14px;
+    padding: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+  .tr-partner-item:hover {
+    border-color: rgba(242, 184, 75, 0.6);
+    transform: translateY(-2px);
+  }
+  .tr-partner-tag {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #160a1d;
+    background: #f2b84b;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .tr-partner-title {
+    margin: 4px 0 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+  .tr-partner-desc {
+    margin: 0;
+    font-size: 0.86rem;
+    color: #bfb5c9;
+    line-height: 1.45;
+  }
+  .tr-partner-cta {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #f2b84b;
+  }
+  .tr-partner-promo {
+    border-style: dashed;
+    border-color: rgba(242, 184, 75, 0.45);
+    background: rgba(242, 184, 75, 0.05);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  /* Priestor pre budúci AdSense banner (mimo prehrávača) */
+  #toprom-adsense-slot {
+    min-height: 0;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  /* Pätička */
+  .tr-footer {
+    border-top: 1px solid rgba(242, 184, 75, 0.2);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .tr-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 18px;
+  }
+  .tr-footer-btn {
+    background: none;
+    border: none;
+    color: #d7cde0;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .tr-footer-btn:hover { color: #f2b84b; }
+  .tr-copyright {
+    font-size: 0.82rem;
+    color: #8f849c;
+  }
+
+  /* Modálne okno pre Kontakt, Pravidlá, GDPR, O projekte */
+  #tr-legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 999990;
+    background: rgba(8, 5, 12, 0.82);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  #tr-legal-modal.tr-open { display: flex; }
+  .tr-modal-box {
+    width: 100%;
+    max-width: 620px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #17101f;
+    border: 1px solid rgba(242, 184, 75, 0.45);
+    border-radius: 18px;
+    padding: 24px;
+    color: #f4efe6;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  }
+  .tr-modal-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 12px;
+  }
+  .tr-modal-top h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #f2b84b;
+  }
+  .tr-modal-close {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    color: #ffffff;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .tr-modal-body {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #d6cde0;
+  }
+  .tr-modal-body p { margin: 0 0 12px; }
+  .tr-modal-body a { color: #f2b84b; }
+
+  /* GDPR / Cookies lišta */
+  #tr-cookie-bar {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 999980;
+    max-width: 920px;
+    margin: 0 auto;
+    background: #1a1224;
+    border: 1px solid rgba(242, 184, 75, 0.5);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  #tr-cookie-bar.tr-show { display: flex; }
+  .tr-cookie-text {
+    flex: 1 1 320px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: #dcd3e6;
+  }
+  .tr-cookie-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tr-btn-gold {
+    background: #f2b84b;
+    color: #160a1d;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .tr-btn-outline {
+    background: transparent;
+    color: #e2d8ec;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+(function () {
+  if (window.__topromMonetizationMounted) return;
+  window.__topromMonetizationMounted = true;
+
+  // ==============================================================
+  // NASTAVENIA – TU SI KEDYKOĽVEK UPRAVÍŠ ODKAZY, E-MAIL A PARTNEROV
+  // ==============================================================
+  var CONFIG = {
+    youtubeChannelUrl: "https://www.youtube.com/@toprom3112?sub_confirmation=1",
+    contactEmail: "edi6012@gmail.com",
+    brandName: "Hitparáda TopRom",
+    studioName: "JN Music Studio Records",
+    partners: [
+      {
+        tag: "Oficiálny kanál",
+        title: "YouTube kanál TopRom",
+        desc: "Novinky, premiéry klipov a hudobná produkcia JN Music Studio Records.",
+        cta: "Pozrieť videá →",
+        url: "https://www.youtube.com/@toprom3112"
+      },
+      {
+        tag: "Hudobné štúdio",
+        title: "JN Music Studio Records",
+        desc: "Nahrávanie, aranžmány, mix a propagácia skladieb pre interpretov.",
+        cta: "Napísať do štúdia →",
+        url: "mailto:edi6012@gmail.com?subject=Spolupr%C3%A1ca%20JN%20Music%20Studio"
+      }
+      // Ďalšieho sponzora pridáš jednoduchým skopírovaním tohto bloku:
+      // ,{
+      //   tag: "Partner mesiaca",
+      //   title: "Názov firmy alebo interpreta",
+      //   desc: "Krátky popis ponuky, akcie alebo nového albumu.",
+      //   cta: "Navštíviť web →",
+      //   url: "https://priklad.sk"
+      // }
+    ]
+  };
+
+  var LEGAL_PAGES = {
+    about: {
+      title: "O projekte Hitparáda TopRom",
+      paragraphs: [
+        "Hitparáda TopRom je hudobný rebríček pre fanúšikov CZ/SK, rómskej, rockovej a world music scény. Návštevníci každý mesiac hlasujú za svoje obľúbené skladby a podporujú talentovaných interpretov.",
+        "Projekt prevádzkuje tím " + CONFIG.studioName + " v prepojení s YouTube kanálom TopRom. Videá sú prehrávané priamo cez oficiálny YouTube prehrávač."
+      ]
+    },
+    rules: {
+      title: "Pravidlá hitparády a hlasovania",
+      paragraphs: [
+        "1. Každý návštevník môže prideľovať body skladbám v aktuálnom mesačnom kole. Poradie určuje celkový súčet bodov, pri rovnosti rozhoduje počet hlasov.",
+        "2. Do hitparády je možné pridávať iba verejne dostupné hudobné videá z YouTube s povoleným vkladaním (embedding).",
+        "3. Prevádzkovateľ si vyhradzuje právo vyradiť skladby porušujúce autorské práva, nevhodný obsah alebo umelo manipulované hlasy.",
+        "4. Všetky autorské práva k hudobným videám patria ich pôvodným autorom a vydavateľstvám na platforme YouTube."
+      ]
+    },
+    gdpr: {
+      title: "Ochrana osobných údajov (GDPR) a Cookies",
+      paragraphs: [
+        "Prevádzkovateľom webu " + CONFIG.brandName + " je " + CONFIG.studioName + " (kontakt: " + CONFIG.contactEmail + ").",
+        "Technické cookies a lokálne úložisko (localStorage) používame na fungovanie hlasovania, zapamätanie vašej voľby cookies a plynulé prehrávanie.",
+        "Služby tretích strán: Na prehrávanie skladieb využívame oficiálny vložený prehrávač YouTube (Google LLC), ktorý môže ukladať vlastné súbory cookies. Po pripojení reklamného systému Google AdSense môžu byť so súhlasom používateľa zobrazované reklamné bannery Google.",
+        "Svoj súhlas s cookies môžete kedykoľvek zmeniť kliknutím na odkaz „Nastavenia cookies“ v pätičke stránky alebo nás kontaktovať na " + CONFIG.contactEmail + "."
+      ]
+    },
+    contact: {
+      title: "Kontakt a inzercia / partnerstvo",
+      paragraphs: [
+        "Máte záujem o propagáciu vašej skladby, koncertu, nahrávacieho štúdia alebo firmy v sekcii Partneri / Sponzori na webe Hitparáda TopRom?",
+        "Napíšte nám priamo na e-mail: " + CONFIG.contactEmail,
+        "Sledujte tiež náš oficiálny YouTube kanál TopRom, kde zverejňujeme novinky a hudobné premiéry."
+      ]
+    }
+  };
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  function mountUI() {
+    if (document.getElementById("toprom-growth-wrap")) return;
+
+    var wrap = el("section");
+    wrap.id = "toprom-growth-wrap";
+    wrap.setAttribute("aria-label", "Partneri, odber a informácie");
+
+    // 1. YouTube Odber Banner
+    var ytCard = el("div", "tr-card tr-yt-banner");
+    var ytInfo = el("div", "tr-yt-info");
+    ytInfo.appendChild(el("h3", "", "Podpor projekt – odoberaj YouTube kanál TopRom"));
+    ytInfo.appendChild(el("p", "", "Nové klipy, výsledky hitparády a hudobné premiéry priamo na našom oficiálnom kanáli."));
+
+    var ytBtn = el("a", "tr-yt-btn", "▶ Odoberať TopRom na YouTube");
+    ytBtn.href = CONFIG.youtubeChannelUrl;
+    ytBtn.target = "_blank";
+    ytBtn.rel = "noopener noreferrer";
+
+    ytCard.appendChild(ytInfo);
+    ytCard.appendChild(ytBtn);
+    wrap.appendChild(ytCard);
+
+    // 2. Miesto pre budúci Google AdSense banner (mimo prehrávača)
+    var adSlot = el("div");
+    adSlot.id = "toprom-adsense-slot";
+    wrap.appendChild(adSlot);
+
+    // 3. Sekcia Partneri / Sponzori
+    var partnersCard = el("div", "tr-card");
+    var head = el("div", "tr-section-head");
+    head.appendChild(el("h3", "", "Partneri a sponzori"));
+    head.appendChild(el("span", "", "Propagácia interpretov, podujatí a značiek"));
+    partnersCard.appendChild(head);
+
+    var grid = el("div", "tr-partners-grid");
+    CONFIG.partners.forEach(function (p) {
+      var a = el("a", "tr-partner-item");
+      a.href = p.url;
+      if (p.url.indexOf("http") === 0) {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+      var top = el("div");
+      top.appendChild(el("span", "tr-partner-tag", p.tag));
+      top.appendChild(el("div", "tr-partner-title", p.title));
+      top.appendChild(el("p", "tr-partner-desc", p.desc));
+      a.appendChild(top);
+      a.appendChild(el("div", "tr-partner-cta", p.cta));
+      grid.appendChild(a);
+    });
+
+    // Karta pre nových inzerentov
+    var promoBtn = el("button", "tr-partner-item tr-partner-promo");
+    promoBtn.type = "button";
+    var promoTop = el("div");
+    promoTop.appendChild(el("span", "tr-partner-tag", "Inzercia"));
+    promoTop.appendChild(el("div", "tr-partner-title", "Chcete byť partnerom?"));
+    promoTop.appendChild(el("p", "tr-partner-desc", "Zviditeľnite svoj nový klip, kapelu, akciu alebo firmu pred fanúšikmi hudby."));
+    promoBtn.appendChild(promoTop);
+    promoBtn.appendChild(el("div", "tr-partner-cta", "Kontaktovať nás →"));
+    promoBtn.addEventListener("click", function () { openModal("contact"); });
+    grid.appendChild(promoBtn);
+
+    partnersCard.appendChild(grid);
+    wrap.appendChild(partnersCard);
+
+    // 4. Pätička s povinnými odkazmi
+    var footer = el("footer", "tr-footer");
+    var links = el("div", "tr-footer-links");
+    [
+      ["about", "O projekte"],
+      ["rules", "Pravidlá hitparády"],
+      ["gdpr", "Ochrana súkromia (GDPR)"],
+      ["contact", "Kontakt a inzercia"]
+    ].forEach(function (pair) {
+      var b = el("button", "tr-footer-btn", pair[1]);
+      b.type = "button";
+      b.addEventListener("click", function () { openModal(pair[0]); });
+      links.appendChild(b);
+    });
+
+    var cookieSettingsBtn = el("button", "tr-footer-btn", "Nastavenia cookies");
+    cookieSettingsBtn.type = "button";
+    cookieSettingsBtn.addEventListener("click", function () { showCookieBar(true); });
+    links.appendChild(cookieSettingsBtn);
+
+    footer.appendChild(links);
+    footer.appendChild(el("div", "tr-copyright", "© " + new Date().getFullYear() + " " + CONFIG.brandName + " • " + CONFIG.studioName));
+    wrap.appendChild(footer);
+
+    // 5. Modálne okno
+    var modal = el("div");
+    modal.id = "tr-legal-modal";
+    var modalBox = el("div", "tr-modal-box");
+    var modalTop = el("div", "tr-modal-top");
+    var modalTitle = el("h3");
+    var modalClose = el("button", "tr-modal-close", "✕");
+    modalClose.type = "button";
+    modalClose.setAttribute("aria-label", "Zavrieť");
+    modalTop.appendChild(modalTitle);
+    modalTop.appendChild(modalClose);
+
+    var modalBody = el("div", "tr-modal-body");
+    modalBox.appendChild(modalTop);
+    modalBox.appendChild(modalBody);
+    modal.appendChild(modalBox);
+
+    function closeModal() { modal.classList.remove("tr-open"); }
+    function openModal(key) {
+      var data = LEGAL_PAGES[key];
+      if (!data) return;
+      modalTitle.textContent = data.title;
+      modalBody.innerHTML = "";
+      data.paragraphs.forEach(function (text) {
+        modalBody.appendChild(el("p", "", text));
+      });
+      if (key === "contact") {
+        var mailLink = el("a", "tr-btn-gold", "Napísať e-mail (" + CONFIG.contactEmail + ")");
+        mailLink.href = "mailto:" + CONFIG.contactEmail + "?subject=Hitpar%C3%A1da%20TopRom%20-%20Kontakt";
+        mailLink.style.display = "inline-block";
+        mailLink.style.textDecoration = "none";
+        mailLink.style.marginTop = "6px";
+        modalBody.appendChild(mailLink);
+      }
+      modal.classList.add("tr-open");
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+    });
+
+    // 6. GDPR / Cookies lišta
+    var cookieBar = el("div");
+    cookieBar.id = "tr-cookie-bar";
+    var cText = el("div", "tr-cookie-text", "Tento web používa súbory cookies na fungovanie hlasovania, prehrávanie YouTube videí a v budúcnosti aj zobrazovanie reklám. Viac informácií nájdete v sekcii Ochrana súkromia (GDPR).");
+    var cActions = el("div", "tr-cookie-actions");
+    var btnNecessary = el("button", "tr-btn-outline", "Len nevyhnutné");
+    btnNecessary.type = "button";
+    var btnAccept = el("button", "tr-btn-gold", "Prijať všetko");
+    btnAccept.type = "button";
+
+    function saveConsent(val) {
+      try { localStorage.setItem("toprom_cookie_consent_v1", val); } catch (_) {}
+      cookieBar.classList.remove("tr-show");
+    }
+    btnNecessary.addEventListener("click", function () { saveConsent("necessary"); });
+    btnAccept.addEventListener("click", function () { saveConsent("all"); });
+
+    cActions.appendChild(btnNecessary);
+    cActions.appendChild(btnAccept);
+    cookieBar.appendChild(cText);
+    cookieBar.appendChild(cActions);
+
+    function showCookieBar(force) {
+      var saved = null;
+      try { saved = localStorage.getItem("toprom_cookie_consent_v1"); } catch (_) {}
+      if (force || !saved) cookieBar.classList.add("tr-show");
+    }
+
+    document.body.appendChild(wrap);
+    document.body.appendChild(modal);
+    document.body.appendChild(cookieBar);
+    showCookieBar(false);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mountUI);
+  } else {
+    mountUI();
+  }
+})();
+</script>!-- Hitparáda TopRom – Vstavaný YouTube prehrávač (PC + Mobil) -->
 <script>
 (function () {
   if (window.__topRomWebPlayerLoaded) return;
